@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/QtOub">
+        <file>JeffPhoto.JPG</file>
+        <file>LogonBackground.jpg</file>
+    </qresource>
+</RCC>
