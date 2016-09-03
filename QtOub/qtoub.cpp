@@ -11,5 +11,5 @@ QtOub::QtOub(QWidget *parent)
 
 QtOub::~QtOub()
 {
-
+	 
 }
