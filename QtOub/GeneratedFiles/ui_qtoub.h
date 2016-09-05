@@ -53,7 +53,7 @@ public:
     {
         if (QtOubClass->objectName().isEmpty())
             QtOubClass->setObjectName(QStringLiteral("QtOubClass"));
-        QtOubClass->resize(1011, 785);
+        QtOubClass->resize(1091, 851);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -128,7 +128,7 @@ public:
         QtOubClass->setCentralWidget(myCentralWidget);
         menuBar = new QMenuBar(QtOubClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1011, 21));
+        menuBar->setGeometry(QRect(0, 0, 1091, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         QtOubClass->setMenuBar(menuBar);
@@ -138,10 +138,13 @@ public:
         statusBar = new QStatusBar(QtOubClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         QtOubClass->setStatusBar(statusBar);
+        QWidget::setTabOrder(lineEdit_user, lineEdit_password);
+        QWidget::setTabOrder(lineEdit_password, pushButton);
 
         menuBar->addAction(menuFile->menuAction());
 
         retranslateUi(QtOubClass);
+        QObject::connect(pushButton, SIGNAL(clicked()), QtOubClass, SLOT(on_pushButton_logon_clicked()));
 
         QMetaObject::connectSlotsByName(QtOubClass);
     } // setupUi

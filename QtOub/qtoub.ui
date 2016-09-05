@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1011</width>
-    <height>785</height>
+    <width>1091</width>
+    <height>851</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -133,7 +133,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1011</width>
+     <width>1091</width>
      <height>21</height>
     </rect>
    </property>
@@ -155,8 +155,33 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>lineEdit_user</tabstop>
+  <tabstop>lineEdit_password</tabstop>
+  <tabstop>pushButton</tabstop>
+ </tabstops>
  <resources>
   <include location="qtoub.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QtOubClass</receiver>
+   <slot>on_pushButton_logon_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>476</x>
+     <y>461</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>352</x>
+     <y>307</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>on_pushButton_logon_clicked()</slot>
+ </slots>
 </ui>

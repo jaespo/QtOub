@@ -8,6 +8,9 @@ class QtOub : public QMainWindow
 {
 	Q_OBJECT
 
+private slots:
+	void on_pushButton_logon_clicked();
+
 public:
 	QtOub(QWidget *parent = 0);
 	~QtOub();

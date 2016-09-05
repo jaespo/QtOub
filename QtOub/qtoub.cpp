@@ -1,15 +1,53 @@
 #include "qtoub.h"
+#include <qmessagebox.h>
+#include "..\LogonServer\Msg.h""
 
 QtOub::QtOub(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 
-//	this->centralWidget()->setStyleSheet(
-//		"background-image:url(\":/QtOub/LogonBackground.jpg\")" );
 }
 
 QtOub::~QtOub()
 {
     
+}
+
+//
+//	Called when the logon button is clicked
+//
+void QtOub::on_pushButton_logon_clicked()
+{
+	QString user = ui.lineEdit_user->text();
+	QString password = ui.lineEdit_password->text();
+
+	//
+	//	Verify that a user name was given
+	//
+	if (user == "")
+	{
+		QMessageBox::critical(this, "Missing user name",
+			"Please specify a user name");
+		return;
+	}
+
+	//
+	//	Verify that a password was given
+	//
+	if ( password == "")
+	{
+		QMessageBox::critical(this, "Missing password",
+			"Please specify a password");
+		return;
+	}
+
+	//
+	//	Format a logon request
+	//
+	SLogonReq		req;
+	req.mReqCode = ELogonServerReqCode::kLogon;
+	req.mReqId = CReq::GetNextReqId();
+	FILLFIELD(req.mUserId, user.toStdString());
+	FILLFIELD(req.mPassword, password.toStdString());
 }
