@@ -4,8 +4,7 @@
 //
 //	(C) 2016 by Jeffery A Esposito
 //
-
-#include "..\OubLib\oubtypes.h"
+#include "..\OubLib\misc.h"
 #include "..\OubLib\msg.h"
 
 enum ELogonServerReqCode
@@ -20,6 +19,7 @@ enum ELogonServerReqCode
 //
 class CLogonReq: public CReq
 {
+public:
 	YUserId			mUserId;
 	YPassword		mPassword;
 };
@@ -29,8 +29,6 @@ class CLogonReq: public CReq
 //
 class CLogonRsp: public CRsp
 {
-	YReqCode		mReqCode;
-	YReqId			mReqId;
-	YRspCode		mRspCode;
-	YErrorText		mErrorText;
+	//
+	//	All of the members are in the base CRsp
 };

@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="msg.h" />
-    <ClInclude Include="oubtypes.h" />
+    <ClInclude Include="misc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="msg.cpp" />

@@ -1,6 +1,6 @@
 #include "qtoub.h"
 #include <qmessagebox.h>
-#include "..\LogonServer\Msg.h""
+#include "..\LogonServer\Msg.h"
 
 QtOub::QtOub(QWidget *parent)
 	: QMainWindow(parent)
@@ -45,7 +45,7 @@ void QtOub::on_pushButton_logon_clicked()
 	//
 	//	Format a logon request
 	//
-	SLogonReq		req;
+	CLogonReq		req;
 	req.mReqCode = ELogonServerReqCode::kLogon;
 	req.mReqId = CReq::GetNextReqId();
 	FILLFIELD(req.mUserId, user.toStdString());

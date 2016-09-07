@@ -1,5 +1,5 @@
 #pragma once
-#include "oubtypes.h"
+#include "misc.h"
 
 //
 //	the base message class
@@ -25,6 +25,11 @@ public:
 
 	YReqCode		mReqCode;
 	YReqId			mReqId;
+
+	static YReqId GetNextReqId() { return mgCurReqId++; }
+
+private:
+	static YReqId	mgCurReqId;
 };
 
 //
