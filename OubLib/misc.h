@@ -26,5 +26,5 @@ typedef char			YErrorText[1024];
 #define FILLFIELD( dst, src )									\
 {																\
     memmove(dst, src.c_str(), src.size());						\
-	memchr(dst + src.size(), ' ', sizeof( dst ) - src.size())	\
+	memchr(dst + src.size(), ' ', sizeof( dst ) - src.size());	\
 }
