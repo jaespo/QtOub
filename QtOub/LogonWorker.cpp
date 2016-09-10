@@ -1,11 +1,13 @@
+#include <qmessagebox.h>
+#include <qdebug.h>
 #include "LogonWorker.h"
 
 //
 //	ctor for the logon worker
 //
-LogonWorker::LogonWorker( QObject* parent ) :
-	QObject( parent )
+LogonWorker::LogonWorker()
 {
+	mbLogonPending = false;
 }
 
 //
@@ -16,11 +18,12 @@ LogonWorker::~LogonWorker()
 }
 
 //
-// Start processing data.
+//	starts the logon processing
 //
-void LogonWorker::process() 
+void LogonWorker::onStartLogon(const CLogonReq & rReq)
 {
-	// TODO put socket stuff here
-	qDebug("LogonWorker processing");
-	emit finished();
+	CLogonRsp		rsp;
+	qDebug() << "Logging on";
+	emit logonFinished(rsp);
 }
+

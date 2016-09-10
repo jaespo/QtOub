@@ -2,6 +2,24 @@
 #include <qmessagebox.h>
 #include "..\LogonServer\Msg.h"
 
+//
+//	slot called when a logon completes
+//
+void QtOub::onLogonFinished(const CLogonRsp &)
+{
+	QMessageBox(QMessageBox::Icon::Information, "Logged on", "Logged on");
+	ui.pushButton_logon->setEnabled(true);
+}
+
+//
+//	slot called when there was a communications error on the logon server
+//
+void QtOub::onLogonError(const QString& errorText )
+{
+	QMessageBox(QMessageBox::Icon::Critical, "Logon Error", errorText);
+	ui.pushButton_logon->setEnabled(true);
+}
+
 QtOub::QtOub(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -10,19 +28,17 @@ QtOub::QtOub(QWidget *parent)
 	//
 	//	Set up the logon worker thread
 	//
+	qRegisterMetaType<CLogonReq>("CLogonReq");
+	qRegisterMetaType<CLogonRsp>("CLogonRsp");
 	mpLogonThread = new QThread( this );
-	mpLogonWorker = new LogonWorker( this );
+	mpLogonWorker = new LogonWorker;
 	mpLogonWorker->moveToThread( mpLogonThread );
-	connect(mpLogonWorker, SIGNAL(error(QString)), 
-			 this, SLOT(errorString(QString)));
-	connect(mpLogonThread, SIGNAL(started()), 
-			mpLogonWorker, SLOT(process()));
-	connect(mpLogonWorker, SIGNAL(finished()), 
-			mpLogonThread, SLOT(quit()));
-	connect(mpLogonWorker, SIGNAL(finished()), 
-			mpLogonWorker, SLOT(deleteLater()));
-	connect(mpLogonThread, SIGNAL(finished()), 
-			mpLogonThread, SLOT(deleteLater()));
+	connect(mpLogonWorker, SIGNAL(logonFinished( const CLogonRsp& )),
+		this, SLOT(onLogonFinished(const CLogonRsp&))); 
+	connect(mpLogonWorker, SIGNAL(logonError(const QString&)),
+		this, SLOT(onLogonError(const QString&))); 
+	connect(this, SIGNAL(startLogon(const CLogonReq&)),
+		mpLogonWorker, SLOT(onStartLogon(const CLogonReq&)));
 }
 
 QtOub::~QtOub()
@@ -33,7 +49,7 @@ QtOub::~QtOub()
 //
 //	Called when the logon button is clicked
 //
-void QtOub::on_pushButton_logon_clicked()
+void QtOub::onPushButton_logon_clicked()
 {
 	QString user = ui.lineEdit_user->text();
 	QString password = ui.lineEdit_password->text();
@@ -67,10 +83,12 @@ void QtOub::on_pushButton_logon_clicked()
 	req.mReqId = CReq::GetNextReqId();
 	FILLFIELD(req.mUserId, user.toStdString());
 	FILLFIELD(req.mPassword, password.toStdString());
-	qDebug("Startomg Logon thread");
-	mpLogonThread->start();
-
+	if ( !mpLogonThread->isRunning() )
+		mpLogonThread->start();
+	ui.pushButton_logon->setEnabled(false);
+	emit startLogon(req);
+	
 	//
-	//	slot logonFinished will be invoked upon completion
+	//	slot logonFinished or logonError will be invoked upon completion
 	//
 }

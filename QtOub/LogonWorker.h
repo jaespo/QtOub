@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject.h>
+#include "..\LogonServer\msg.h"
 
 //
 //	Object that is run in a thread to send a logon request and process
@@ -11,17 +12,17 @@ class LogonWorker : public QObject
 	Q_OBJECT
 
 public:
-	LogonWorker( QObject *parent );
+	LogonWorker();
 	~LogonWorker();
 
-public slots:
-	void process();
+private slots:
+	void onStartLogon( const CLogonReq& rReq ); // TODO code sockets
 
 signals:
-	void error(QString errorText);
-	void finished();
+	void logonFinished( const CLogonRsp& rRsp );
+	void logonError(const QString& rErrorText);
 
 private:
-
+	bool		mbLogonPending;
 };
 

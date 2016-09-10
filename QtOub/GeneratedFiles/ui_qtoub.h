@@ -41,7 +41,7 @@ public:
     QFormLayout *formLayout_2;
     QLabel *label;
     QLineEdit *lineEdit_user;
-    QPushButton *pushButton;
+    QPushButton *pushButton_logon;
     QLabel *label_2;
     QLineEdit *lineEdit_password;
     QMenuBar *menuBar;
@@ -107,10 +107,10 @@ public:
 
         formLayout_2->setWidget(0, QFormLayout::FieldRole, lineEdit_user);
 
-        pushButton = new QPushButton(groupBox);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton_logon = new QPushButton(groupBox);
+        pushButton_logon->setObjectName(QStringLiteral("pushButton_logon"));
 
-        formLayout_2->setWidget(2, QFormLayout::LabelRole, pushButton);
+        formLayout_2->setWidget(2, QFormLayout::LabelRole, pushButton_logon);
 
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
@@ -139,12 +139,12 @@ public:
         statusBar->setObjectName(QStringLiteral("statusBar"));
         QtOubClass->setStatusBar(statusBar);
         QWidget::setTabOrder(lineEdit_user, lineEdit_password);
-        QWidget::setTabOrder(lineEdit_password, pushButton);
+        QWidget::setTabOrder(lineEdit_password, pushButton_logon);
 
         menuBar->addAction(menuFile->menuAction());
 
         retranslateUi(QtOubClass);
-        QObject::connect(pushButton, SIGNAL(clicked()), QtOubClass, SLOT(on_pushButton_logon_clicked()));
+        QObject::connect(pushButton_logon, SIGNAL(clicked()), QtOubClass, SLOT(onPushButton_logon_clicked()));
 
         QMetaObject::connectSlotsByName(QtOubClass);
     } // setupUi
@@ -154,7 +154,7 @@ public:
         QtOubClass->setWindowTitle(QApplication::translate("QtOubClass", "QtOub", 0));
         groupBox->setTitle(QApplication::translate("QtOubClass", "Logon", 0));
         label->setText(QApplication::translate("QtOubClass", "User", 0));
-        pushButton->setText(QApplication::translate("QtOubClass", "Logon", 0));
+        pushButton_logon->setText(QApplication::translate("QtOubClass", "Logon", 0));
         label_2->setText(QApplication::translate("QtOubClass", "Password", 0));
         menuFile->setTitle(QApplication::translate("QtOubClass", "File", 0));
     } // retranslateUi
