@@ -7,6 +7,22 @@ QtOub::QtOub(QWidget *parent)
 {
 	ui.setupUi(this);
 
+	//
+	//	Set up the logon worker thread
+	//
+	mpLogonThread = new QThread( this );
+	mpLogonWorker = new LogonWorker( this );
+	mpLogonWorker->moveToThread( mpLogonThread );
+	connect(mpLogonWorker, SIGNAL(error(QString)), 
+			 this, SLOT(errorString(QString)));
+	connect(mpLogonThread, SIGNAL(started()), 
+			mpLogonWorker, SLOT(process()));
+	connect(mpLogonWorker, SIGNAL(finished()), 
+			mpLogonThread, SLOT(quit()));
+	connect(mpLogonWorker, SIGNAL(finished()), 
+			mpLogonWorker, SLOT(deleteLater()));
+	connect(mpLogonThread, SIGNAL(finished()), 
+			mpLogonThread, SLOT(deleteLater()));
 }
 
 QtOub::~QtOub()
@@ -46,8 +62,15 @@ void QtOub::on_pushButton_logon_clicked()
 	//	Format a logon request
 	//
 	CLogonReq		req;
+	CLogonRsp		rsp;
 	req.mReqCode = ELogonServerReqCode::kLogon;
 	req.mReqId = CReq::GetNextReqId();
 	FILLFIELD(req.mUserId, user.toStdString());
 	FILLFIELD(req.mPassword, password.toStdString());
+	qDebug("Startomg Logon thread");
+	mpLogonThread->start();
+
+	//
+	//	slot logonFinished will be invoked upon completion
+	//
 }

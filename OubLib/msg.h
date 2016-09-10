@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "misc.h"
 
 //
@@ -42,5 +43,7 @@ class CRsp : public CMsg
 	YRspCode		mRspCode;
 	YErrorText		mErrorText;
 };
+
+
 
 

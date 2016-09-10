@@ -7,6 +7,8 @@
 #include "..\OubLib\misc.h"
 #include "..\OubLib\msg.h"
 
+const unsigned __int16		kLogonServerPort = 3141;
+
 enum ELogonServerReqCode
 {
 	kLogon,
@@ -31,4 +33,5 @@ class CLogonRsp: public CRsp
 {
 	//
 	//	All of the members are in the base CRsp
+	//
 };

@@ -2,7 +2,10 @@
 #define QTOUB_H
 
 #include <QtWidgets/QMainWindow>
+#include <QThread.h>
+
 #include "ui_qtoub.h"
+#include "LogonWorker.h"
 
 class QtOub : public QMainWindow
 {
@@ -16,7 +19,9 @@ public:
 	~QtOub();
 
 private:
-	Ui::QtOubClass ui;
+	Ui::QtOubClass	ui;
+	QThread*		mpLogonThread;
+	LogonWorker*	mpLogonWorker;
 };
 
 #endif // QTOUB_H
