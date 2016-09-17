@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClInclude Include="msg.h" />
     <ClInclude Include="misc.h" />
+    <ClInclude Include="tcp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="msg.cpp" />
+    <ClCompile Include="tcp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E85FA2AC-5CAD-4647-9F17-EB5020413B0E}</ProjectGuid>
