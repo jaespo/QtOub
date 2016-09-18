@@ -7,13 +7,14 @@
 #include <iostream>
 #include "tcp.h"
 
+
 //
 //	ctor of the listener
 //
-CListener::CListener(const std::string& rsIpaddr, __int16 vPort)
+CListener::CListener(const std::string& rsIpaddr, const std::string& vPort)
 {
 	msIpaddr = rsIpaddr;
-	mPort = vPort;
+	msPort = vPort;
 }
 
 //
@@ -40,8 +41,7 @@ void CListener::ListenLoop()
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0)
 	{
-		std::cerr << "WSAStartup failed with error: " << iResult << std::endl;
-		return 1;
+		THROW_ERR(1, << "WSAStartup failed with error: " << iResult);
 	}
 
 	memset(&hints, 0, sizeof(hints));
@@ -56,11 +56,11 @@ void CListener::ListenLoop()
 	iResult = getaddrinfo(NULL, msPort.c_str(), &hints, &result);
 	if (iResult != 0) 
 	{
-		std::cerr << "getaddrinfo failed with error: " << iResult << std::endl;
 		WSACleanup();
-		return 1;
+		THROW_ERR(2, << "getaddrinfo failed with error: " << iResult);
 	}
 
+	// TODO ... finish codeing this
 	// Create a SOCKET for connecting to server
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (ListenSocket == INVALID_SOCKET) {
@@ -98,7 +98,5 @@ void CListener::ListenLoop()
 		WSACleanup();
 		return 1;
 	}
-}
-
 }
 

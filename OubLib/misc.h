@@ -6,6 +6,7 @@
 //
 
 #include <string.h>
+#include <sstream>
 
 //
 //	Various data types used by oub
@@ -28,3 +29,30 @@ typedef char			YErrorText[1024];
     memmove(dst, src.c_str(), src.size());						\
 	memchr(dst + src.size(), ' ', sizeof( dst ) - src.size());	\
 }
+
+//
+//	This define creates and throws a CErrorInfo
+//
+#define THROW_ERR( zCode, zText )				\
+{												\
+	CErrorInfo	vErrorInfo(zCode, __FILE__ );	\
+	vErrorInfo.GetStream() zText;				\
+	throw vErrorInfo;							\
+}
+
+class CErrorInfo
+{
+public:
+	CErrorInfo() { mCode = 0;  }
+	CErrorInfo(__int32 vCode, const char *pzSrcFile );	// TODO ...
+
+	std::ostringstream& GetStream() { return mStream; }
+	std::string GetText();	// TODO ...
+	std::string GetSrcFile() { return sSrcFile; }
+	__int32 GetCode() { return mCode; }
+
+private:
+	std::string						msSrcFile;
+	__int32							mCode;
+	std::ostringstream				mStream;
+};

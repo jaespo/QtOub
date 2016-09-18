@@ -21,6 +21,8 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
+#include "misc.h"
+
 #define DEFAULT_BUFLEN	4096
 
 //
