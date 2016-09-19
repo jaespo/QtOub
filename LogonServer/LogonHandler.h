@@ -8,12 +8,15 @@
 #include "..\OubLib\tcp.h"
 #include "msg.h"
 
-class CLogonHandler : public CHandler
-{
-public:
-	CLogonHandler();	// TODO ...
-	~CLogonHandler();	// TODO ...
+namespace oub {
+	class CLogonHandler : public CHandler
+	{
+	public:
+		CLogonHandler() {}
+		~CLogonHandler() {}
 
-	virtual void onReqReceived(const CReq& rReq);	// TODO ...
-};
+		virtual void DoProcessReq(const CReq& rReq);
+		void ProcessLogonReq(const CLogonReq& rLogonReq); // TODO
+	};
+};	// namespace oub
 

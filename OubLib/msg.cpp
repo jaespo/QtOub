@@ -1,3 +1,3 @@
 #include "msg.h"
 
-YReqId	CReq::mgCurReqId = 0;
+oub::YReqId		oub::CReq::mgCurReqId = 0;

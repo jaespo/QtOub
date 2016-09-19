@@ -24,6 +24,7 @@
     <ClInclude Include="tcp.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="misc.cpp" />
     <ClCompile Include="msg.cpp" />
     <ClCompile Include="tcp.cpp" />
   </ItemGroup>

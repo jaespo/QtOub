@@ -2,48 +2,50 @@
 #include <string>
 #include "misc.h"
 
-//
-//	the base message class
-//
-class CMsg
+namespace oub 
 {
+	//
+	//	the base message class
+	//
+	class CMsg
+	{
 
-public:
-	virtual ~CMsg() {}
+	public:
+		virtual ~CMsg() {}
 
-	__int16			mMsgLen;
-};
+		__int16			mMsgLen;
+	};
 
-//
-//	the base request class
-//
-class CReq: public CMsg
-{
+	//
+	//	the base request class
+	//
+	class CReq : public CMsg
+	{
 
-public: 
-	CReq() {}
-	virtual ~CReq() {}
+	public:
+		CReq() {}
+		virtual ~CReq() {}
 
-	YReqCode		mReqCode;
-	YReqId			mReqId;
+		oub::YReqCode		mReqCode;
+		oub::YReqId			mReqId;
 
-	static YReqId GetNextReqId() { return mgCurReqId++; }
+		static YReqId GetNextReqId() { return mgCurReqId++; }
 
-private:
-	static YReqId	mgCurReqId;
-};
+	private:
+		static YReqId		mgCurReqId;
+	};
 
-//
-//	the base response class
-//
-class CRsp : public CMsg
-{
-	YReqCode		mReqCode;
-	YReqId			mReqId;
-	YRspCode		mRspCode;
-	YErrorText		mErrorText;
-};
+	//
+	//	the base response class
+	//
+	class CRsp : public CMsg
+	{
+	public:
+		YReqCode			mReqCode;
+		YReqId				mReqId;
+		YRspCode			mRspCode;
+		YErrorText			mErrorText;
+	};
 
-
-
+}; // namespace oub
 
