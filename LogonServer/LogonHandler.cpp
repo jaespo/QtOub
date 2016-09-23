@@ -7,7 +7,7 @@
 //
 void oub::CLogonHandler::DoProcessReq(const CReq& rReq)
 {
-	if (dynamic_cast<const CLogonReq&>(rReq) != NULL)
+	if (dynamic_cast<const CLogonReq*>(&rReq) != NULL)
 	{
 		ProcessLogonReq(dynamic_cast<const CLogonReq&>(rReq));
 	}
@@ -24,5 +24,5 @@ void oub::CLogonHandler::ProcessLogonReq(const CLogonReq& rLogonReq)
 	vLogonRsp.mReqId = rLogonReq.mReqId;
 	vLogonRsp.mRspCode = 0;
 	memset(vLogonRsp.mErrorText, 0, sizeof(vLogonRsp.mErrorText));
-	GetSocket().Reply(vLogonRsp);
+	GetSocket()->Reply(vLogonRsp);
 }

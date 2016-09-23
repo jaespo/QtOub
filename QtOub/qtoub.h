@@ -13,11 +13,11 @@ class QtOub : public QMainWindow
 
 private slots:
 	void onPushButton_logon_clicked();
-	void onLogonFinished(const CLogonRsp&); 
+	void onLogonFinished(const oub::CLogonRsp&); 
 	void onLogonError(const QString&);
 
 signals:
-	void startLogon(const CLogonReq& rReq);
+	void startLogon(const oub::CLogonReq& rReq);
 
 public:
 	QtOub(QWidget *parent = 0);

@@ -15,11 +15,11 @@ public:
 	LogonWorker();
 	~LogonWorker();
 
-private slots:
-	void onStartLogon( const CLogonReq& rReq ); // TODO code sockets
+	private slots:
+	void onStartLogon(const oub::CLogonReq& rReq); // TODO code sockets
 
 signals:
-	void logonFinished( const CLogonRsp& rRsp );
+	void logonFinished(const oub::CLogonRsp& rRsp);
 	void logonError(const QString& rErrorText);
 
 private:

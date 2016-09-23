@@ -12,6 +12,7 @@
 //
 #include <stdlib.h>
 #include <stdio.h>
+#include <memory>
 #include <string>
 
 //
@@ -43,11 +44,27 @@ namespace oub {
 		CSocket(SOCKET vSocket) { mSocket = vSocket; }
 		~CSocket();
 
-		void ReadUpdate(CReq& rReq);
-		void Reply(CRsp& rRsp);
+		bool ReadUpdate(CReq& rReq);
+		void Reply(CRsp& rRsp);			// TODO ...
 
 	private:
 		SOCKET		mSocket;
+	};
+
+	//
+	//	Handler thread base class.
+	//
+	class CHandler
+	{
+	public:
+		virtual ~CHandler() {}
+
+		std::shared_ptr<CSocket> GetSocket() { return mqSocket; }
+		void operator()(std::shared_ptr<CSocket> qSocket);
+		virtual void DoProcessReq(const CReq& rReq) {};
+
+	private:
+		std::shared_ptr<CSocket>		mqSocket;
 	};
 
 	//
@@ -57,8 +74,8 @@ namespace oub {
 	class CListener
 	{
 	public:
-		CListener(const std::string& rsIpaddr, const std::string& rsPort);
-		void ListenLoop();
+		CListener(const std::string& rsIpaddr, const std::string& vPort);// TODO
+		void ListenLoop(); // TODO
 
 	private:
 		virtual std::shared_ptr<CHandler> CreateHandler() = 0;
@@ -74,22 +91,15 @@ namespace oub {
 	template<class AHandler> class TListener : public CListener
 	{
 	public:
-		TListener(const std::string& rIpaddr, const std::string& rsPort)
-			: CHandler(rIpaddr, vPort) {}
+		TListener(const std::string& rsIpaddr, const std::string& rsPort) :
+			CListener(rsIpaddr, rsPort) {}
 
 	private:
-		virtual shared_ptr<CHandler> CreateHandler() { return shared_ptr( new AHandler ); }
+		virtual std::shared_ptr<CHandler> CreateHandler() 
+		{ 
+			return std::shared_ptr<CHandler>( new AHandler ); 
+		}
 	};
 
-	//
-	//	Handler thread base class.
-	//
-	class CHandler
-	{
-	public:
-		virtual ~CHandler() {}
-		void operator()( SOCKET vSocket );
-		virtual void DoProcessReq(const CReq& rReq) = 0;
-	};
 
 };	// namespace oub

@@ -22,7 +22,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tcp.h">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,12 +12,12 @@
 //
 //	Called when the handler thread starts
 //
-void oub::CHandler::operator()( SOCKET mSocket )
+void oub::CHandler::operator()( std::shared_ptr<CSocket> qSocket )
 {
-	CSocket					vSocket( mSocket );
 	char					pBuf[DEFAULT_BUFLEN];
 	CReq*					pReq = (CReq*)pBuf;
-
+	
+	mqSocket = qSocket;
 	//
 	//	Loop reading requests
 	//
@@ -25,7 +25,7 @@ void oub::CHandler::operator()( SOCKET mSocket )
 	{
 		try
 		{
-			bool bEof = vSocket.ReadUpdate(*pReq);
+			bool bEof = mqSocket->ReadUpdate(*pReq);
 			if (bEof)
 				return;
 		}
@@ -35,10 +35,9 @@ void oub::CHandler::operator()( SOCKET mSocket )
 			return;
 		}
 
-		DoProcessReq( *pReq )
+		DoProcessReq(*pReq);
 	}	
 }
-
 
 //
 //	ctor of the listener
@@ -56,15 +55,11 @@ void oub::CListener::ListenLoop()
 {
 	WSADATA				wsaData;
 	int					iResult;
-	int					iSendResult;
 	SOCKET				ListenSocket = INVALID_SOCKET;
 	SOCKET				ClientSocket = INVALID_SOCKET;
 
 	struct addrinfo*	result = NULL;
 	struct addrinfo		hints;
-
-	char				recvbuf[DEFAULT_BUFLEN];
-	int					recvbuflen = DEFAULT_BUFLEN;
 
 	//
 	//	Initialize Winsock
@@ -136,7 +131,7 @@ void oub::CListener::ListenLoop()
 		//	Accept a client socket
 		//
 		ClientSocket = accept(ListenSocket, NULL, NULL);
-		if (ClientSocket == INVALID_SOCKET) 
+		if (ClientSocket == INVALID_SOCKET)
 		{
 			long err = WSAGetLastError();
 			closesocket(ListenSocket);
@@ -147,9 +142,14 @@ void oub::CListener::ListenLoop()
 		//
 		//	Start the handler thread
 		//
-		std::shared_ptr<oub::CSocket> qSocket( new oub::CSocket(ClientSocket) );
-		std::shared_ptr<CHandler> qHandler( CreateHandler() );
-		std::shared_ptr<std::thread> qThread( new std::thread(qHandler, qSocket) );
+//		std::shared_ptr<CSocket> qSocket( new CSocket(ClientSocket) );
+//		std::shared_ptr<CHandler> qHandler( CreateHandler() );
+//		std::shared_ptr<std::thread> qThread(new std::thread{ *qHandler, qSocket } );
+
+		std::shared_ptr<CSocket> 		qSocket(new CSocket(ClientSocket));
+		std::shared_ptr<CHandler>		qHandler( CreateHandler() );
+		std::shared_ptr<std::thread>	qThread(new std::thread(*qHandler, qSocket) );
+		// TODO add the above to a thread list
 	}
 }
 
@@ -169,7 +169,6 @@ oub::CSocket::~CSocket()
 //
 bool oub::CSocket::ReadUpdate(CReq& rReq)
 {
-	int				iResult;
 	char			pBuf[DEFAULT_BUFLEN];
 	__int32			vTotCountRead = 0;
 	__int32			vCountRead;

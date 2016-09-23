@@ -63,4 +63,3 @@ namespace oub {
 	};
 
 };	// namespace oub
-s

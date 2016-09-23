@@ -16,7 +16,7 @@
 int main()
 {
 
-	oub::TListener<oub::CLogonHandler>	vListener("localhost", DEFAULT_PORT);
+	oub::TListener<oub::CLogonHandler>	vListener( "localhost", DEFAULT_PORT );
 	char								ch;
 
 	std::cout
