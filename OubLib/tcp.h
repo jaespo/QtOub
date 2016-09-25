@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <memory>
 #include <string>
+#include <vector>
+#include <thread>
 
 //
 //	Winsock related includes
@@ -41,11 +43,13 @@ namespace oub {
 	class CSocket
 	{
 	public:
+		typedef std::shared_ptr<CSocket>	Yq;
+
 		CSocket(SOCKET vSocket) { mSocket = vSocket; }
 		~CSocket();
 
 		bool ReadUpdate(CReq& rReq);
-		void Reply(CRsp& rRsp);			// TODO ...
+		void Reply(CRsp& rRsp);
 
 	private:
 		SOCKET		mSocket;
@@ -57,12 +61,15 @@ namespace oub {
 	class CHandler
 	{
 	public:
+		typedef std::shared_ptr<CHandler>	Yq;
 		virtual ~CHandler() {}
 
-		std::shared_ptr<CSocket> GetSocket() { return mqSocket; }
-		void operator()(std::shared_ptr<CSocket> qSocket);
-		virtual void DoProcessReq(const CReq& rReq) {};
+		CSocket::Yq GetSocket() { return mqSocket; }
+		void RunLoop(CSocket::Yq qSocket);
+		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp ) = 0;
 
+		static void RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket);
+			
 	private:
 		std::shared_ptr<CSocket>		mqSocket;
 	};
@@ -74,19 +81,21 @@ namespace oub {
 	class CListener
 	{
 	public:
-		CListener(const std::string& rsIpaddr, const std::string& vPort);// TODO
-		void ListenLoop(); // TODO
-
+		CListener(const std::string& rsIpaddr, const std::string& vPort);
+		void ListenLoop();
+		
 	private:
+		typedef std::shared_ptr<std::thread>	YqThread;
 		virtual std::shared_ptr<CHandler> CreateHandler() = 0;
 
-		std::string		msIpaddr;
-		std::string		msPort;
+		std::string				msIpaddr;
+		std::string				msPort;
+		std::vector<YqThread>	mThreadVect;
 	};
 
 	//
 	//  A class that listens in a loop, creating handler threads when they
-	//	connect.
+	//	connect.  Most of the functionality is in CListener.
 	//
 	template<class AHandler> class TListener : public CListener
 	{
@@ -95,9 +104,9 @@ namespace oub {
 			CListener(rsIpaddr, rsPort) {}
 
 	private:
-		virtual std::shared_ptr<CHandler> CreateHandler() 
+		virtual CHandler::Yq CreateHandler() 
 		{ 
-			return std::shared_ptr<CHandler>( new AHandler ); 
+			return CHandler::Yq( new AHandler ); 
 		}
 	};
 

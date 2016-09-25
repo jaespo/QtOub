@@ -5,24 +5,21 @@
 //
 //	virtual override.  Called when the handler receives a request.
 //
-void oub::CLogonHandler::DoProcessReq(const CReq& rReq)
+void oub::CLogonHandler::DoProcessReq(const CReq& rReq, const CRsp& rRsp )
 {
-	if (dynamic_cast<const CLogonReq*>(&rReq) != NULL)
+	if ( rReq.mReqCode == oub::kReqCodeLogon )
 	{
-		ProcessLogonReq(dynamic_cast<const CLogonReq&>(rReq));
+		ProcessLogonReq( (const CLogonReq&)(rReq), (CLogonRsp&)(rRsp));
 	}
 }
 
 //
 //	Called upon the receipt of a logon request
 //
-void oub::CLogonHandler::ProcessLogonReq(const CLogonReq& rLogonReq)
+void oub::CLogonHandler::ProcessLogonReq(const CLogonReq& rLogonReq, CLogonRsp& rLogonRsp)
 {
-	CLogonRsp		vLogonRsp;
-
-	vLogonRsp.mReqCode = rLogonReq.mReqCode;
-	vLogonRsp.mReqId = rLogonReq.mReqId;
-	vLogonRsp.mRspCode = 0;
-	memset(vLogonRsp.mErrorText, 0, sizeof(vLogonRsp.mErrorText));
-	GetSocket()->Reply(vLogonRsp);
+	rLogonRsp.mReqCode = rLogonReq.mReqCode;
+	rLogonRsp.mReqId = rLogonReq.mReqId;
+	rLogonRsp.mRspCode = 0;
+	memset(rLogonRsp.mErrorText, 0, sizeof(rLogonRsp.mErrorText));
 }

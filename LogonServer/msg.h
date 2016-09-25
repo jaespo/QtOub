@@ -13,9 +13,9 @@ namespace oub
 
 	enum ELogonServerReqCode
 	{
-		kLogon,
-		kLogoff,
-		kGetWorldServers
+		kReqCodeLogon,
+		kReqCodeLogoff,
+		kReqGetWorldServers
 	};
 
 	//

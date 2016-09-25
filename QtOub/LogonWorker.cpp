@@ -20,9 +20,9 @@ LogonWorker::~LogonWorker()
 //
 //	starts the logon processing
 //
-void LogonWorker::onStartLogon(const CLogonReq & rReq)
+void LogonWorker::onStartLogon(const oub::CLogonReq & rReq)
 {
-	CLogonRsp		rsp;
+	oub::CLogonRsp		rsp;
 	qDebug() << "Logging on";
 	emit logonFinished(rsp);
 }

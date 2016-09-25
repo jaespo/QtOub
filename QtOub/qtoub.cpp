@@ -5,7 +5,7 @@
 //
 //	slot called when a logon completes
 //
-void QtOub::onLogonFinished(const CLogonRsp &)
+void QtOub::onLogonFinished(const oub::CLogonRsp &)
 {
 	QMessageBox(QMessageBox::Icon::Information, "Logged on", "Logged on");
 	ui.pushButton_logon->setEnabled(true);
@@ -28,8 +28,8 @@ QtOub::QtOub(QWidget *parent)
 	//
 	//	Set up the logon worker thread
 	//
-	qRegisterMetaType<CLogonReq>("CLogonReq");
-	qRegisterMetaType<CLogonRsp>("CLogonRsp");
+	qRegisterMetaType<oub::CLogonReq>("CLogonReq");
+	qRegisterMetaType<oub::CLogonRsp>("CLogonRsp");
 	mpLogonThread = new QThread( this );
 	mpLogonWorker = new LogonWorker;
 	mpLogonWorker->moveToThread( mpLogonThread );
@@ -77,10 +77,10 @@ void QtOub::onPushButton_logon_clicked()
 	//
 	//	Format a logon request
 	//
-	CLogonReq		req;
-	CLogonRsp		rsp;
-	req.mReqCode = ELogonServerReqCode::kLogon;
-	req.mReqId = CReq::GetNextReqId();
+	oub::CLogonReq		req;
+	oub::CLogonRsp		rsp;
+	req.mReqCode = oub::ELogonServerReqCode::kReqCodeLogon;
+	req.mReqId = oub::CReq::GetNextReqId();
 	FILLFIELD(req.mUserId, user.toStdString());
 	FILLFIELD(req.mPassword, password.toStdString());
 	if ( !mpLogonThread->isRunning() )

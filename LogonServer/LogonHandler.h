@@ -15,8 +15,8 @@ namespace oub {
 		CLogonHandler() {}
 		~CLogonHandler() {}
 
-		virtual void DoProcessReq(const CReq& rReq);
-		void ProcessLogonReq(const CLogonReq& rLogonReq); // TODO
+		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp );
+		void ProcessLogonReq(const CLogonReq& rLogonReq, CLogonRsp& rLogonRsp);
 	};
 };	// namespace oub
 

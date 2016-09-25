@@ -12,11 +12,13 @@
 //
 //	Called when the handler thread starts
 //
-void oub::CHandler::operator()( std::shared_ptr<CSocket> qSocket )
+void oub::CHandler::RunLoop( CSocket::Yq qSocket )
 {
-	char					pBuf[DEFAULT_BUFLEN];
-	CReq*					pReq = (CReq*)pBuf;
-	
+	char					pReqBuf[DEFAULT_BUFLEN];
+	char					pRspBuf[DEFAULT_BUFLEN];
+	CReq*					pReq = (CReq*)pReqBuf;
+	CRsp*					pRsp = (CRsp*)pRspBuf;
+
 	mqSocket = qSocket;
 	//
 	//	Loop reading requests
@@ -35,8 +37,16 @@ void oub::CHandler::operator()( std::shared_ptr<CSocket> qSocket )
 			return;
 		}
 
-		DoProcessReq(*pReq);
+		DoProcessReq( *pReq, *pRsp );
 	}	
+}
+
+//
+//	Called by std::thread when it wants to start running the thread
+//
+void oub::CHandler::RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket)
+{
+	qHandler->RunLoop(qSocket);
 }
 
 //
@@ -142,14 +152,11 @@ void oub::CListener::ListenLoop()
 		//
 		//	Start the handler thread
 		//
-//		std::shared_ptr<CSocket> qSocket( new CSocket(ClientSocket) );
-//		std::shared_ptr<CHandler> qHandler( CreateHandler() );
-//		std::shared_ptr<std::thread> qThread(new std::thread{ *qHandler, qSocket } );
-
-		std::shared_ptr<CSocket> 		qSocket(new CSocket(ClientSocket));
-		std::shared_ptr<CHandler>		qHandler( CreateHandler() );
-		std::shared_ptr<std::thread>	qThread(new std::thread(*qHandler, qSocket) );
-		// TODO add the above to a thread list
+		CSocket::Yq 	qSocket(new CSocket(ClientSocket));
+		CHandler::Yq	qHandler( CreateHandler() );
+		YqThread		qThread(
+			new std::thread(CHandler::RunThread, qHandler, qSocket) );
+		mThreadVect.push_back(qThread);
 	}
 }
 
