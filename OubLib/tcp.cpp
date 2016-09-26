@@ -52,7 +52,7 @@ void oub::CHandler::RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket)
 //
 //	ctor of the listener
 //
-oub::CListener::CListener(const std::string& rsIpaddr, const std::string& vPort)
+void oub::CListener::InitListener(const std::string& rsIpaddr, const std::string& vPort)
 {
 	msIpaddr = rsIpaddr;
 	msPort = vPort;

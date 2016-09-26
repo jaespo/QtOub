@@ -81,7 +81,7 @@ namespace oub {
 	class CListener
 	{
 	public:
-		CListener(const std::string& rsIpaddr, const std::string& vPort);
+		void InitListener(const std::string& rsIpaddr, const std::string& vPort);
 		void ListenLoop();
 		
 	private:
@@ -100,8 +100,10 @@ namespace oub {
 	template<class AHandler> class TListener : public CListener
 	{
 	public:
-		TListener(const std::string& rsIpaddr, const std::string& rsPort) :
-			CListener(rsIpaddr, rsPort) {}
+		TListener(const std::string& rsIpaddr, const std::string& rsPort)
+		{
+			InitListener(rsIpaddr, rsPort);
+		}
 
 	private:
 		virtual CHandler::Yq CreateHandler() 
