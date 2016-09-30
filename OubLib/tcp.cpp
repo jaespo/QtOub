@@ -8,6 +8,7 @@
 #include <iostream>
 #include <thread>
 #include "tcp.h"
+#include "trace.h"
 
 //
 //	Called when the handler thread starts
@@ -19,6 +20,7 @@ void oub::CHandler::RunLoop( CSocket::Yq qSocket )
 	CReq*					pReq = (CReq*)pReqBuf;
 	CRsp*					pRsp = (CRsp*)pRspBuf;
 
+	TR("tcp", << "Handler run loop started");
 	mqSocket = qSocket;
 	//
 	//	Loop reading requests
@@ -70,6 +72,8 @@ void oub::CListener::ListenLoop()
 
 	struct addrinfo*	result = NULL;
 	struct addrinfo		hints;
+	
+	TR("tcp", << "Listener::ListenLoop started");
 
 	//
 	//	Initialize Winsock
@@ -126,6 +130,7 @@ void oub::CListener::ListenLoop()
 	//
 	//	Listen for a connection
 	//
+	TR("tcp", << "posting listen" );
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) 
 	{
@@ -140,6 +145,7 @@ void oub::CListener::ListenLoop()
 		//
 		//	Accept a client socket
 		//
+		TR("tcp", << "posting accept");
 		ClientSocket = accept(ListenSocket, NULL, NULL);
 		if (ClientSocket == INVALID_SOCKET)
 		{
@@ -183,6 +189,7 @@ bool oub::CSocket::ReadUpdate(CReq& rReq)
 	bool			bGotLen = false;
 	bool			bDone = false;
 
+	TR("tcp", << "ReadUpdate initiated");
 	//
 	//	The data may come in in clumps, so loop reading them until the request
 	//	fills up.
@@ -194,8 +201,10 @@ bool oub::CSocket::ReadUpdate(CReq& rReq)
 		//
 		vCountRead = recv( mSocket, pBuf + vTotCountRead, 
 			DEFAULT_BUFLEN - vTotCountRead, 0);
+		TR("tcp", << "recv() completed with " << vCountRead << " bytes");
 		if (vCountRead == 0)
 		{
+			TR("tcp", << "ReadUpdate EOF" );
 			return true;
 		}
 
@@ -218,6 +227,7 @@ bool oub::CSocket::ReadUpdate(CReq& rReq)
 			memcpy(&rReq, pBuf, vTotCountRead);
 		}
 	}
+	TR("tcp", << "ReadUpdate completed with " << vTotCountRead << " bytes");
 	return false;
 }
 

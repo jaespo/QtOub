@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="trace.h" />
     <ClInclude Include="msg.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="tcp.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="msg.cpp" />
     <ClCompile Include="tcp.cpp" />
+    <ClCompile Include="trace.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E85FA2AC-5CAD-4647-9F17-EB5020413B0E}</ProjectGuid>
