@@ -12,12 +12,10 @@
 //
 #pragma comment (lib, "Ws2_32.lib")
  
-#define DEFAULT_PORT	"27015"
-
 int main()
 {
 	oub::CTrace::inst().EnableTag("tcp");
-	oub::TListener<oub::CLogonHandler>	vListener( "localhost", DEFAULT_PORT );
+	oub::TListener<oub::CLogonHandler>	vListener( LOGONSVR_IP, LOGONSVR_PORT );
 	char								ch;
 
 	std::cout

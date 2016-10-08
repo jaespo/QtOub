@@ -59,6 +59,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_LogonWorker.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ClientSocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qtoub.h">
@@ -77,6 +80,12 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_qtoub.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="todo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSocket.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

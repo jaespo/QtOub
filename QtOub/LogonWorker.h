@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include <QObject.h>
+#include <QtNetwork\QTcpSocket>
 #include "..\LogonServer\msg.h"
 
 //
@@ -16,13 +19,14 @@ public:
 	~LogonWorker();
 
 	private slots:
-	void onStartLogon(const oub::CLogonReq& rReq); // TODO code sockets
+	void onStartLogon(const oub::CLogonReq& rReq);
 
 signals:
 	void logonFinished(const oub::CLogonRsp& rRsp);
 	void logonError(const QString& rErrorText);
 
 private:
-	bool		mbLogonPending;
+	std::shared_ptr<QTcpSocket>	mqSocket;
+	bool						mbLogonPending;
 };
 

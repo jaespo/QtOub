@@ -1,6 +1,13 @@
+//
+//	(C) 2016 by Jeffery A Esposito
+//
 #pragma once
 #include <string>
 #include "misc.h"
+
+#define LOGONSVR_IP					"localhost"
+#define LOGONSVR_PORT				"27015"
+#define LOGONSVR_CONNECT_TIMEOUT	10000
 
 namespace oub 
 {
