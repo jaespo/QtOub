@@ -6,7 +6,7 @@
 #include "misc.h"
 
 #define LOGONSVR_IP					"localhost"
-#define LOGONSVR_PORT				"27015"
+#define LOGONSVR_PORT				"27016"
 #define LOGONSVR_CONNECT_TIMEOUT	10000
 
 namespace oub 
@@ -20,6 +20,9 @@ namespace oub
 	public:
 		virtual ~CMsg() {}
 
+		//
+		//	Inclusive
+		//
 		__int16			mMsgLen;
 	};
 

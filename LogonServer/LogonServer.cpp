@@ -16,7 +16,6 @@ int main()
 {
 	oub::CTrace::inst().EnableTag("tcp");
 	oub::TListener<oub::CLogonHandler>	vListener( LOGONSVR_IP, LOGONSVR_PORT );
-	char								ch;
 
 	std::cout
 		<< "QtOub Logon Server ~ (C) 2016 by Jeffery A Esposito"

@@ -30,13 +30,13 @@ QtOub::QtOub(QWidget *parent)
 	//
 	qRegisterMetaType<oub::CLogonReq>("oub::CLogonReq");
 	qRegisterMetaType<oub::CLogonRsp>("oub::CLogonRsp");
-	mpLogonThread = new QThread( this );
+	mpLogonThread = new QThread(this);
 	mpLogonWorker = new LogonWorker;
-	mpLogonWorker->moveToThread( mpLogonThread );
-	connect(mpLogonWorker, SIGNAL(logonFinished( const oub::CLogonRsp& )),
-		this, SLOT(onLogonFinished(const oub::CLogonRsp&))); 
+	mpLogonWorker->moveToThread(mpLogonThread);
+	connect(mpLogonWorker, SIGNAL(logonFinished(const oub::CLogonRsp&)),
+		this, SLOT(onLogonFinished(const oub::CLogonRsp&)));
 	connect(mpLogonWorker, SIGNAL(logonError(const QString&)),
-		this, SLOT(onLogonError(const QString&))); 
+		this, SLOT(onLogonError(const QString&)));
 	connect(this, SIGNAL(startLogon(const oub::CLogonReq&)),
 		mpLogonWorker, SLOT(onStartLogon(const oub::CLogonReq&)));
 }

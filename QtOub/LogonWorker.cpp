@@ -1,7 +1,7 @@
 #include <qmessagebox.h>
 #include <qdebug.h>
 #include "LogonWorker.h"
-#include <QtNetwork\QTcpSocket>
+#include "ClientSocket.h"
 
 
 //
@@ -25,10 +25,20 @@ LogonWorker::~LogonWorker()
 void LogonWorker::onStartLogon(const oub::CLogonReq & rReq)
 {
 	oub::CLogonRsp		rsp;  // todo code talking to server
-	qDebug() << "Logging on";
-	mqSocket = std::shared_ptr<QTcpSocket>( new QTcpSocket(this) );
-	mqSocket->connectToHost( LOGONSVR_IP, QString( LOGONSVR_PORT ).toInt() );
-	mqSocket->waitForConnected(LOGONSVR_CONNECT_TIMEOUT);
+
+	qDebug() << "ClientSocket: Logging on";
+	mqClientSocket 
+		= ClientSocket::Yq( new ClientSocket(LOGONSVR_IP, LOGONSVR_PORT ) );
+	try
+	{
+		mqClientSocket->Connect();
+		mqClientSocket->WriteRead(rReq, rsp);
+	}
+	catch ( oub::CErrorInfo& e )
+	{
+		qDebug() << "ClientSocket: " << QString::fromStdString( e.GetText() );
+		emit logonError("Unable to writeread request to logon server");
+	}
 	emit logonFinished(rsp);
 }
 

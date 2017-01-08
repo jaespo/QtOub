@@ -130,7 +130,7 @@ void oub::CListener::ListenLoop()
 	//
 	//	Listen for a connection
 	//
-	TR("tcp", << "posting listen" );
+	TR( "tcp", << "posting listen" );
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) 
 	{
@@ -147,6 +147,7 @@ void oub::CListener::ListenLoop()
 		//
 		TR("tcp", << "posting accept");
 		ClientSocket = accept(ListenSocket, NULL, NULL);
+		TR("tcp", << "accept completed");
 		if (ClientSocket == INVALID_SOCKET)
 		{
 			long err = WSAGetLastError();

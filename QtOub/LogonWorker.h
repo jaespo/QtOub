@@ -5,6 +5,7 @@
 #include <QObject.h>
 #include <QtNetwork\QTcpSocket>
 #include "..\LogonServer\msg.h"
+#include "ClientSocket.h"
 
 //
 //	Object that is run in a thread to send a logon request and process
@@ -18,7 +19,7 @@ public:
 	LogonWorker();
 	~LogonWorker();
 
-	private slots:
+private slots:
 	void onStartLogon(const oub::CLogonReq& rReq);
 
 signals:
@@ -26,7 +27,7 @@ signals:
 	void logonError(const QString& rErrorText);
 
 private:
-	std::shared_ptr<QTcpSocket>	mqSocket;
-	bool						mbLogonPending;
+	ClientSocket::Yq		mqClientSocket;
+	bool					mbLogonPending;
 };
 
