@@ -1,4 +1,3 @@
-#pragma once
 ///////////////////////////////////////////////////////////////////////////
 //
 // (C) 2016  by Jeffery A Esposito
@@ -9,7 +8,7 @@
 //
 //	ctor of a CErrorInfo
 //
-oub::CErrorInfo::CErrorInfo(__int32 vCode, const char *pzSrcFile)
+jlib::CErrorInfo::CErrorInfo(__int32 vCode, const char *pzSrcFile)
 {
 	mCode = vCode;
 	msSrcFile = pzSrcFile;

@@ -26,6 +26,8 @@ namespace oub
 	public:
 		YUserId			mUserId;
 		YPassword		mPassword;
+
+		std::string traceStr() const; // todo code
 	};
 
 	//

@@ -8,14 +8,15 @@
 #include <string.h>
 #include <sstream>
 
-namespace oub {
+namespace jlib 
+{
 
 	//
 	//	Various data types used by oub
 	//
 	typedef __int16			YReqCode;
 	typedef __int16			YRspCode;
-	typedef __int64			YReqId;
+	typedef __int64			YReqSeq;
 	typedef char			YUserId[32];
 	typedef char			YPassword[32];
 	typedef char			YErrorText[1024];
@@ -62,4 +63,4 @@ namespace oub {
 		std::ostringstream				mStream;
 	};
 
-};	// namespace oub
+};	// namespace jlib

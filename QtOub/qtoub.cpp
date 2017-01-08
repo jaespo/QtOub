@@ -7,7 +7,7 @@
 //
 void QtOub::onLogonFinished(const oub::CLogonRsp &)
 {
-	QMessageBox(QMessageBox::Icon::Information, "Logged on", "Logged on");
+	QMessageBox::information(this, "Logged on", "Logged on");
 	ui.pushButton_logon->setEnabled(true);
 }
 
@@ -16,7 +16,7 @@ void QtOub::onLogonFinished(const oub::CLogonRsp &)
 //
 void QtOub::onLogonError(const QString& errorText )
 {
-	QMessageBox(QMessageBox::Icon::Critical, "Logon Error", errorText);
+	QMessageBox::critical( this, "Logon Error", errorText);
 	ui.pushButton_logon->setEnabled(true);
 }
 

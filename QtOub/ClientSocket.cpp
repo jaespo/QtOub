@@ -62,18 +62,23 @@ bool ClientSocket::WriteRead(const oub::CReq& req, oub::CRsp& rsp)
 			<< " is not connected");
 	}
 	mqSocket->write((const char *)&req, req.mMsgLen);
-	mqSocket->waitForBytesWritten(kWriteTimeout);
-	if (mqSocket->error() != 0)
+	while( mqSocket->bytesToWrite() > 0 )
 	{
-		THROW_ERR(9999,
-			<< mIpAddr.toStdString()
-			<< ":"
-			<< mPort
-			<< " write failed with error "
-			<< mqSocket->error()
-			<< ": "
-			<< mqSocket->errorString().toStdString() );
+		if ( !mqSocket->waitForBytesWritten(kWriteTimeout) );
+		{
+			THROW_ERR(9999,
+				<< mIpAddr.toStdString()
+				<< ":"
+				<< mPort
+				<< " write failed with error "
+				<< mqSocket->error()
+				<< ": "
+				<< mqSocket->errorString().toStdString());
+		}
 	}
+	qDebug() << "Wrote request: \n" ;
+	std::string strReq = req.traceStr();
+	qDebug() << QString::fromStdString(strReq);
 	while (mqSocket->waitForReadyRead(kReadTimeout))
 	{
 		qint64 countRead = mqSocket->read(((char *)&rsp)+bufoff, sizeof(rsp));

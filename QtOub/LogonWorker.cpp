@@ -24,7 +24,7 @@ LogonWorker::~LogonWorker()
 //
 void LogonWorker::onStartLogon(const oub::CLogonReq & rReq)
 {
-	oub::CLogonRsp		rsp;  // todo code talking to server
+	oub::CLogonRsp		rsp;
 
 	qDebug() << "ClientSocket: Logging on";
 	mqClientSocket 
@@ -38,6 +38,7 @@ void LogonWorker::onStartLogon(const oub::CLogonReq & rReq)
 	{
 		qDebug() << "ClientSocket: " << QString::fromStdString( e.GetText() );
 		emit logonError("Unable to writeread request to logon server");
+		return;
 	}
 	emit logonFinished(rsp);
 }

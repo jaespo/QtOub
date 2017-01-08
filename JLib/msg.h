@@ -5,11 +5,7 @@
 #include <string>
 #include "misc.h"
 
-#define LOGONSVR_IP					"localhost"
-#define LOGONSVR_PORT				"27016"
-#define LOGONSVR_CONNECT_TIMEOUT	10000
-
-namespace oub 
+namespace jlib
 {
 	//
 	//	the base message class
@@ -19,6 +15,8 @@ namespace oub
 
 	public:
 		virtual ~CMsg() {}
+
+		static const int kLabelWidth = 16;
 
 		//
 		//	Inclusive
@@ -36,13 +34,14 @@ namespace oub
 		CReq() {}
 		virtual ~CReq() {}
 
-		oub::YReqCode		mReqCode;
-		oub::YReqId			mReqId;
+		YReqCode			mReqCode;
+		YReqSeq				mReqSeq;
 
-		static YReqId GetNextReqId() { return mgCurReqId++; }
+		static YReqSeq GetNextReqSeq() { return mgCurReqId++; }
+		virtual std::string traceStr() const; // todo code
 
 	private:
-		static YReqId		mgCurReqId;
+		static YReqSeq		mgCurReqId;
 	};
 
 	//
@@ -52,9 +51,11 @@ namespace oub
 	{
 	public:
 		YReqCode			mReqCode;
-		YReqId				mReqId;
+		YReqSeq				mReqSeq;
 		YRspCode			mRspCode;
 		YErrorText			mErrorText;
+
+		virtual std::string traceStr() const; // todo code
 	};
 
 }; // namespace oub
