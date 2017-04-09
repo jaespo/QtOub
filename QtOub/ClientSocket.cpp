@@ -4,7 +4,8 @@
 
 
 #include <qstring.h>
-#include "..\OubLib\misc.h"
+#include "..\OubLib\oubmisc.h"
+#include "..\OubLib\oubmsg.h"
 #include "ClientSocket.h"
 
 //
@@ -47,7 +48,7 @@ void ClientSocket::Connect()
 //
 //	writeread a request to the socket
 //
-bool ClientSocket::WriteRead(const oub::CReq& req, oub::CRsp& rsp)
+bool ClientSocket::WriteRead(const jlib::CReq& req, jlib ::CRsp& rsp)
 {
 	bool connected = (mqSocket->state() == QTcpSocket::ConnectedState);
 	bool gotCount = false;

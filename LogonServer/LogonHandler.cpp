@@ -1,11 +1,10 @@
 #include "stdafx.h"
-#include "msg.h"
 #include "LogonHandler.h"
 
 //
 //	virtual override.  Called when the handler receives a request.
 //
-void oub::CLogonHandler::DoProcessReq(const CReq& rReq, const CRsp& rRsp )
+void oub::CLogonHandler::DoProcessReq(const jlib::CReq& rReq, const jlib::CRsp& rRsp )
 {
 	if ( rReq.mReqCode == oub::kReqCodeLogon )
 	{
@@ -19,7 +18,7 @@ void oub::CLogonHandler::DoProcessReq(const CReq& rReq, const CRsp& rRsp )
 void oub::CLogonHandler::ProcessLogonReq(const CLogonReq& rLogonReq, CLogonRsp& rLogonRsp)
 {
 	rLogonRsp.mReqCode = rLogonReq.mReqCode;
-	rLogonRsp.mReqId = rLogonReq.mReqId;
+	rLogonRsp.mReqSeq = rLogonReq.mReqSeq;
 	rLogonRsp.mRspCode = 0;
 	memset(rLogonRsp.mErrorText, 0, sizeof(rLogonRsp.mErrorText));
 }

@@ -4,7 +4,7 @@
 
 #include <QObject.h>
 #include <QtNetwork\QTcpSocket>
-#include "..\LogonServer\msg.h"
+#include "..\OubLib\oubmsg.h"
 #include "ClientSocket.h"
 
 //

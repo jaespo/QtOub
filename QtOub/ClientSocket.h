@@ -5,7 +5,7 @@
 #include <memory>
 #include <qstring.h>
 #include <QtNetwork\QTcpSocket>
-#include "..\LogonServer\Msg.h"
+#include "..\JLib\msg.h"
 
 class ClientSocket
 {
@@ -15,7 +15,7 @@ public:
 	~ClientSocket();
 
 	void Connect();
-	bool WriteRead(const oub::CReq& req, oub::CRsp& rsp);
+	bool WriteRead(const jlib::CReq& req, jlib::CRsp& rsp);
 
 private:
 	int								kWriteTimeout = 2000;	// 2 seconds

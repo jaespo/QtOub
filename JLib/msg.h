@@ -37,11 +37,11 @@ namespace jlib
 		YReqCode			mReqCode;
 		YReqSeq				mReqSeq;
 
-		static YReqSeq GetNextReqSeq() { return mgCurReqId++; }
-		virtual std::string traceStr() const; // todo code
+		static YReqSeq GetNextReqSeq() { return mgCurReqSeq++; }
+		virtual std::string traceStr() const;
 
 	private:
-		static YReqSeq		mgCurReqId;
+		static YReqSeq		mgCurReqSeq;
 	};
 
 	//
@@ -55,7 +55,7 @@ namespace jlib
 		YRspCode			mRspCode;
 		YErrorText			mErrorText;
 
-		virtual std::string traceStr() const; // todo code
+		virtual std::string traceStr() const;
 	};
 
 }; // namespace oub

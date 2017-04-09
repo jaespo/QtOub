@@ -3,7 +3,7 @@
 //
 //  Statics
 //
-oub::CTrace           oub::CTrace::mgInst;
+jlib::CTrace           jlib::CTrace::mgInst;
 
 //
 //  Enables the specfied tag
@@ -11,7 +11,7 @@ oub::CTrace           oub::CTrace::mgInst;
 //  @param pzTag
 //      is the tag to enable
 //
-void oub::CTrace::EnableTag(const char* pzTag)
+void jlib::CTrace::EnableTag(const char* pzTag)
 {
 	mTagList.push_back(std::string(pzTag));
 }
@@ -19,12 +19,12 @@ void oub::CTrace::EnableTag(const char* pzTag)
 //
 //  Disables all of the enabled tags
 //
-void oub::CTrace::Reset()
+void jlib::CTrace::Reset()
 {
 	mTagList.erase(mTagList.begin(), mTagList.end());
 }
 
-bool oub::CTrace::IsTagActive(const char* pzTag) const
+bool jlib::CTrace::IsTagActive(const char* pzTag) const
 {
 	std::list<std::string>::const_iterator it;
 	std::string      sTag(pzTag);

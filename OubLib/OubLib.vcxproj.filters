@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="tcp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="oubmisc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -29,10 +23,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tcp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="trace.cpp">
+    <ClCompile Include="oubmsg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

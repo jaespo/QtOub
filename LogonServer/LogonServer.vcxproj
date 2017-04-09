@@ -106,6 +106,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,7 +145,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="LogonHandler.h" />
-    <ClInclude Include="LogonMsg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -159,6 +159,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JLib\JLib.vcxproj">
+      <Project>{794f0bb9-0a36-446e-b27d-76aba32afea0}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\OubLib\OubLib.vcxproj">
       <Project>{e85fa2ac-5cad-4647-9f17-eb5020413b0e}</Project>
     </ProjectReference>

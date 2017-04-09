@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClInclude Include="oubmisc.h" />
     <ClInclude Include="oubmsg.h" />
-    <ClInclude Include="trace.h" />
-    <ClInclude Include="tcp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tcp.cpp" />
-    <ClCompile Include="trace.cpp" />
+    <ProjectReference Include="..\JLib\JLib.vcxproj">
+      <Project>{794f0bb9-0a36-446e-b27d-76aba32afea0}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="oubmsg.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E85FA2AC-5CAD-4647-9F17-EB5020413B0E}</ProjectGuid>

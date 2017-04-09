@@ -2,10 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "..\OubLib\tcp.h"
-#include "Msg.h"
+#include "..\JLib\tcp.h"
+#include "..\OubLib\oubmsg.h"
 #include "LogonHandler.h"
-#include "..\OubLib\trace.h"
+#include "..\JLib\trace.h"
 
 //
 // Need to link with Ws2_32.lib
@@ -14,8 +14,8 @@
  
 int main()
 {
-	oub::CTrace::inst().EnableTag("tcp");
-	oub::TListener<oub::CLogonHandler>	vListener( LOGONSVR_IP, LOGONSVR_PORT );
+	jlib::CTrace::inst().EnableTag("tcp");
+	jlib::TListener<oub::CLogonHandler>	vListener( LOGONSVR_IP, LOGONSVR_PORT );
 
 	std::cout
 		<< "QtOub Logon Server ~ (C) 2016 by Jeffery A Esposito"

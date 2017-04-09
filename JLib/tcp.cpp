@@ -1,4 +1,3 @@
-#pragma once
 ///////////////////////////////////////////////////////////////////////////
 //
 // (C) 2016  by Jeffery A Esposito
@@ -13,7 +12,7 @@
 //
 //	Called when the handler thread starts
 //
-void oub::CHandler::RunLoop( CSocket::Yq qSocket )
+void jlib::CHandler::RunLoop(CSocket::Yq qSocket)
 {
 	char					pReqBuf[DEFAULT_BUFLEN];
 	char					pRspBuf[DEFAULT_BUFLEN];
@@ -39,14 +38,14 @@ void oub::CHandler::RunLoop( CSocket::Yq qSocket )
 			return;
 		}
 
-		DoProcessReq( *pReq, *pRsp );
-	}	
+		DoProcessReq(*pReq, *pRsp);
+	}
 }
 
 //
 //	Called by std::thread when it wants to start running the thread
 //
-void oub::CHandler::RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket)
+void jlib::CHandler::RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket)
 {
 	qHandler->RunLoop(qSocket);
 }
@@ -54,7 +53,7 @@ void oub::CHandler::RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket)
 //
 //	ctor of the listener
 //
-void oub::CListener::InitListener(const std::string& rsIpaddr, const std::string& vPort)
+void jlib::CListener::InitListener(const std::string& rsIpaddr, const std::string& vPort)
 {
 	msIpaddr = rsIpaddr;
 	msPort = vPort;
@@ -63,7 +62,7 @@ void oub::CListener::InitListener(const std::string& rsIpaddr, const std::string
 //
 //	Runs the listen loop.
 //
-void oub::CListener::ListenLoop()
+void jlib::CListener::ListenLoop()
 {
 	WSADATA				wsaData;
 	int					iResult;
@@ -72,7 +71,7 @@ void oub::CListener::ListenLoop()
 
 	struct addrinfo*	result = NULL;
 	struct addrinfo		hints;
-	
+
 	TR("tcp", << "Listener::ListenLoop started");
 
 	//
@@ -94,7 +93,7 @@ void oub::CListener::ListenLoop()
 	// Resolve the server address and port
 	//
 	iResult = getaddrinfo(NULL, msPort.c_str(), &hints, &result);
-	if (iResult != 0) 
+	if (iResult != 0)
 	{
 		WSACleanup();
 		THROW_ERR(2, << "getaddrinfo failed with error: " << iResult);
@@ -104,25 +103,25 @@ void oub::CListener::ListenLoop()
 	// Create a SOCKET for connecting to server
 	//
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (ListenSocket == INVALID_SOCKET) 
+	if (ListenSocket == INVALID_SOCKET)
 	{
 		long err = WSAGetLastError();
 		freeaddrinfo(result);
 		WSACleanup();
-		THROW_ERR( 3, << "socket failed with error: " << err );
+		THROW_ERR(3, << "socket failed with error: " << err);
 	}
 
 	//
 	// Setup the TCP listening socket
 	//
 	iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR) 
+	if (iResult == SOCKET_ERROR)
 	{
 		long err = WSAGetLastError();
 		freeaddrinfo(result);
 		closesocket(ListenSocket);
 		WSACleanup();
-		THROW_ERR( 4, << "bind failed with error: " << err );
+		THROW_ERR(4, << "bind failed with error: " << err);
 	}
 
 	freeaddrinfo(result);
@@ -130,14 +129,14 @@ void oub::CListener::ListenLoop()
 	//
 	//	Listen for a connection
 	//
-	TR( "tcp", << "posting listen" );
+	TR("tcp", << "posting listen on port " << msPort);
 	iResult = listen(ListenSocket, SOMAXCONN);
-	if (iResult == SOCKET_ERROR) 
+	if (iResult == SOCKET_ERROR)
 	{
 		long err = WSAGetLastError();
 		closesocket(ListenSocket);
 		WSACleanup();
-		THROW_ERR(5, << "listen failed with error: " << err );
+		THROW_ERR(5, << "listen failed with error: " << err);
 	}
 
 	while (true)
@@ -160,9 +159,9 @@ void oub::CListener::ListenLoop()
 		//	Start the handler thread
 		//
 		CSocket::Yq 	qSocket(new CSocket(ClientSocket));
-		CHandler::Yq	qHandler( CreateHandler() );
+		CHandler::Yq	qHandler(CreateHandler());
 		YqThread		qThread(
-			new std::thread(CHandler::RunThread, qHandler, qSocket) );
+			new std::thread(CHandler::RunThread, qHandler, qSocket));
 		mThreadVect.push_back(qThread);
 	}
 }
@@ -170,7 +169,7 @@ void oub::CListener::ListenLoop()
 //
 //	dtor for a CSocket
 //
-oub::CSocket::~CSocket()
+jlib::CSocket::~CSocket()
 {
 	shutdown(mSocket, SD_BOTH);
 	closesocket(mSocket);
@@ -181,7 +180,7 @@ oub::CSocket::~CSocket()
 //
 //	returns an EOF flag
 //
-bool oub::CSocket::ReadUpdate(CReq& rReq)
+bool jlib::CSocket::ReadUpdate(CReq& rReq)
 {
 	char			pBuf[DEFAULT_BUFLEN];
 	__int32			vTotCountRead = 0;
@@ -195,17 +194,19 @@ bool oub::CSocket::ReadUpdate(CReq& rReq)
 	//	The data may come in in clumps, so loop reading them until the request
 	//	fills up.
 	//
-	while ( !bDone )
+	while (!bDone)
 	{
 		//
 		//	Read some data and return if we are at EOF
 		//
-		vCountRead = recv( mSocket, pBuf + vTotCountRead, 
-			DEFAULT_BUFLEN - vTotCountRead, 0);
+		vCountRead = recv(mSocket, pBuf + vTotCountRead,
+		DEFAULT_BUFLEN - vTotCountRead, 0);
+		vCountRead = recv(mSocket, pBuf + vTotCountRead,
+			1, 0);
 		TR("tcp", << "recv() completed with " << vCountRead << " bytes");
 		if (vCountRead == 0)
 		{
-			TR("tcp", << "ReadUpdate EOF" );
+			TR("tcp", << "ReadUpdate EOF");
 			return true;
 		}
 
@@ -218,7 +219,7 @@ bool oub::CSocket::ReadUpdate(CReq& rReq)
 			bGotLen = true;
 			memcpy(&vReqSize, pBuf, sizeof(vReqSize));
 		}
-		
+
 		//
 		//	check to see if we have the full request
 		//
@@ -235,11 +236,11 @@ bool oub::CSocket::ReadUpdate(CReq& rReq)
 //
 //	Writes a reply to request
 //
-void oub::CSocket::Reply(CRsp& rRsp)
+void jlib::CSocket::Reply(CRsp& rRsp)
 {
 	int				iSendResult;
 
-	iSendResult = send( mSocket, (const char *)&rRsp, rRsp.mMsgLen, 0 );
+	iSendResult = send(mSocket, (const char *)&rRsp, rRsp.mMsgLen, 0);
 	if (iSendResult == SOCKET_ERROR)
 	{
 		long err = WSAGetLastError();

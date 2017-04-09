@@ -34,7 +34,7 @@ void LogonWorker::onStartLogon(const oub::CLogonReq & rReq)
 		mqClientSocket->Connect();
 		mqClientSocket->WriteRead(rReq, rsp);
 	}
-	catch ( oub::CErrorInfo& e )
+	catch ( jlib::CErrorInfo& e )
 	{
 		qDebug() << "ClientSocket: " << QString::fromStdString( e.GetText() );
 		emit logonError("Unable to writeread request to logon server");

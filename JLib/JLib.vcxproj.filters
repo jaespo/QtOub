@@ -21,9 +21,24 @@
     <ClInclude Include="msg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tcp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tcp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="msg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

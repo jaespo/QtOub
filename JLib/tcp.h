@@ -35,7 +35,8 @@
 
 #define DEFAULT_BUFLEN	4096
 
-namespace oub {
+namespace jlib
+{
 
 	//
 	//  A class that represents a socket
@@ -66,10 +67,10 @@ namespace oub {
 
 		CSocket::Yq GetSocket() { return mqSocket; }
 		void RunLoop(CSocket::Yq qSocket);
-		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp ) = 0;
+		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp) = 0;
 
 		static void RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket);
-			
+
 	private:
 		std::shared_ptr<CSocket>		mqSocket;
 	};
@@ -83,7 +84,7 @@ namespace oub {
 	public:
 		void InitListener(const std::string& rsIpaddr, const std::string& vPort);
 		void ListenLoop();
-		
+
 	private:
 		typedef std::shared_ptr<std::thread>	YqThread;
 		virtual std::shared_ptr<CHandler> CreateHandler() = 0;
@@ -106,9 +107,9 @@ namespace oub {
 		}
 
 	private:
-		virtual CHandler::Yq CreateHandler() 
-		{ 
-			return CHandler::Yq( new AHandler ); 
+		virtual CHandler::Yq CreateHandler()
+		{
+			return CHandler::Yq(new AHandler);
 		}
 	};
 

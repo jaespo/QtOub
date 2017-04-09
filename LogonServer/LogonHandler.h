@@ -5,17 +5,18 @@
 //
 /////////////////////////////////////////////////////////////////////
 
-#include "..\OubLib\tcp.h"
-#include "msg.h"
+#include "..\JLib\tcp.h"
+#include "..\OubLib\oubmsg.h"
 
-namespace oub {
-	class CLogonHandler : public CHandler
+namespace oub 
+{
+	class CLogonHandler : public jlib::CHandler
 	{
 	public:
 		CLogonHandler() {}
 		~CLogonHandler() {}
 
-		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp );
+		virtual void DoProcessReq(const jlib::CReq& rReq, const jlib::CRsp& rRsp );
 		void ProcessLogonReq(const CLogonReq& rLogonReq, CLogonRsp& rLogonRsp);
 	};
 };	// namespace oub

@@ -1,6 +1,6 @@
 #include "qtoub.h"
 #include <qmessagebox.h>
-#include "..\LogonServer\Msg.h"
+#include "..\OubLib\oubmsg.h"
 
 //
 //	slot called when a logon completes
@@ -80,7 +80,8 @@ void QtOub::onPushButton_logon_clicked()
 	oub::CLogonReq		req;
 	oub::CLogonRsp		rsp;
 	req.mReqCode = oub::ELogonServerReqCode::kReqCodeLogon;
-	req.mReqId = oub::CReq::GetNextReqId();
+	req.mReqSeq = jlib::CReq::GetNextReqSeq();
+	req.mMsgLen = sizeof(oub::CLogonReq);
 	FILLFIELD(req.mUserId, user.toStdString());
 	FILLFIELD(req.mPassword, password.toStdString());
 	if ( !mpLogonThread->isRunning() )

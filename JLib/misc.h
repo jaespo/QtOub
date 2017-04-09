@@ -36,11 +36,11 @@ namespace jlib
 	//
 	//	This define creates and throws a CErrorInfo
 	//
-#define THROW_ERR( zCode, zText )					\
-{													\
-	oub::CErrorInfo	vErrorInfo(zCode, __FILE__ );	\
-	vErrorInfo.GetStream() zText;					\
-	throw vErrorInfo;								\
+#define THROW_ERR( zCode, zText )						\
+{														\
+	jlib::CErrorInfo	vErrorInfo(zCode, __FILE__ );	\
+	vErrorInfo.GetStream() zText;						\
+	throw vErrorInfo;									\
 }
 
 	//

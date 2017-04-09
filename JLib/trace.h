@@ -18,14 +18,14 @@
 //
 #define TR( strTag, txt )                                   \
 {                                                           \
-    if ( oub::CTrace::inst().IsTagActive( strTag ) )    \
+    if ( jlib::CTrace::inst().IsTagActive( strTag ) )		\
         std::cout << std::left << std::setw( 16 )           \
             << strTag                                       \
             << ": " txt                                     \
             << std::endl;                                   \
 }
 
-namespace oub 
+namespace jlib
 {
 	class CTrace
 	{
