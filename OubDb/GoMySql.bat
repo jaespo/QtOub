@@ -1,0 +1,1 @@
+"C:\Program Files\MariaDB 10.1\bin\mysql" -u jeff -p

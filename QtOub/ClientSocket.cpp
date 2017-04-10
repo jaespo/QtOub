@@ -46,7 +46,7 @@ void ClientSocket::Connect()
 }
 
 //
-//	writeread a request to the socket
+//	writes a request to the socket and reads the server's reply
 //
 bool ClientSocket::WriteRead(const jlib::CReq& req, jlib ::CRsp& rsp)
 {
@@ -65,7 +65,7 @@ bool ClientSocket::WriteRead(const jlib::CReq& req, jlib ::CRsp& rsp)
 	mqSocket->write((const char *)&req, req.mMsgLen);
 	while( mqSocket->bytesToWrite() > 0 )
 	{
-		if ( !mqSocket->waitForBytesWritten(kWriteTimeout) );
+		if ( !mqSocket->waitForBytesWritten(2000) );
 		{
 			THROW_ERR(9999,
 				<< mIpAddr.toStdString()

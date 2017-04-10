@@ -19,6 +19,7 @@ void oub::CLogonHandler::ProcessLogonReq(const CLogonReq& rLogonReq, CLogonRsp& 
 {
 	rLogonRsp.mReqCode = rLogonReq.mReqCode;
 	rLogonRsp.mReqSeq = rLogonReq.mReqSeq;
+	rLogonRsp.mMsgLen = sizeof(rLogonRsp);
 	rLogonRsp.mRspCode = 0;
 	memset(rLogonRsp.mErrorText, 0, sizeof(rLogonRsp.mErrorText));
 }

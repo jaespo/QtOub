@@ -39,6 +39,7 @@ void jlib::CHandler::RunLoop(CSocket::Yq qSocket)
 		}
 
 		DoProcessReq(*pReq, *pRsp);
+		mqSocket->Reply(*pRsp);
 	}
 }
 
@@ -200,9 +201,7 @@ bool jlib::CSocket::ReadUpdate(CReq& rReq)
 		//	Read some data and return if we are at EOF
 		//
 		vCountRead = recv(mSocket, pBuf + vTotCountRead,
-		DEFAULT_BUFLEN - vTotCountRead, 0);
-		vCountRead = recv(mSocket, pBuf + vTotCountRead,
-			1, 0);
+			DEFAULT_BUFLEN - vTotCountRead, 0);
 		TR("tcp", << "recv() completed with " << vCountRead << " bytes");
 		if (vCountRead == 0)
 		{
@@ -248,6 +247,7 @@ void jlib::CSocket::Reply(CRsp& rRsp)
 		closesocket(mSocket);
 		WSACleanup();
 	}
+	TR("tcp", << "Replied with " << rRsp.mMsgLen << " bytes");
 }
 
 
