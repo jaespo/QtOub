@@ -3,8 +3,8 @@
 #include <my_global.h>
 #include <mysql.h>
 
+#include "..\JLib\misc.h"
 #include "OubDb.h"
-
 
 COubDb::COubDb()
 {
@@ -23,10 +23,10 @@ void COubDb::InitOubDb()
 	mCon = mysql_init(NULL);
 	if (mCon == NULL)
 	{
-		THROW_ERR(9999,	<< "init of DB failed: "
+		THROW_ERR(9999, << "init of DB failed: ");
 	}
 
-	if (mysql_real_connect( 
+	if (mysql_real_connect(
 		mCon, kDbHost, kDbUser, kDbPassword, kDbName, 0, NULL, 0) == NULL)
 	{
 		const char* sErrTxt = mysql_error(mCon);
@@ -34,8 +34,8 @@ void COubDb::InitOubDb()
 		mysql_close(mCon);
 		mCon = NULL;
 		THROW_ERR(9999,
-			<< "Connect to DB failed: "
-			<< sErrText
+			<< "mysql_real_connect failed: "
+			<< sErrTxt
 			<< ", errno "
 			<< vErrNo
 		);
@@ -45,26 +45,29 @@ void COubDb::InitOubDb()
 //
 //	returns the password for a user id
 //
-std::string GetPasswordForUser(const std::string& sUser)
+std::string COubDb::GetPasswordForUser(const std::string& sUser)
 {
 	//
 	//	Query the db
 	//
-	if (mysql_query(mCon, "SELECT password FROM user where name = " + sUser ) )
+	std::string sQuery = "SELECT password FROM user where name = '";
+	sQuery.append(sUser);
+	sQuery.append("'");
+	if (mysql_query(mCon, sQuery.c_str() ) )
 	{
 		const char* sErrTxt = mysql_error(mCon);
 		int vErrNo = mysql_errno(mCon);
 		THROW_ERR(9999,
-			<< "Select of user " 
-			<< sUser
-			< " failed: "
-			<< sErrText
+			<< "mysql_query select of user " 
+			<< kDbUser
+			<< " failed: "
+			<< sErrTxt
 			<< ", errno "
 			<< vErrNo
 		);
 	}
 
-	MYSQL_RES *result = mysql_store_result(cCon);
+	MYSQL_RES *result = mysql_store_result(mCon);
 	if (result == NULL)
 	{
 		const char* sErrTxt = mysql_error(mCon);
@@ -73,13 +76,12 @@ std::string GetPasswordForUser(const std::string& sUser)
 	int num_fields = mysql_num_fields(result);
 	MYSQL_ROW row;
 	row = mysql_fetch_row(result);
-	if (row == null)
+	if (row == NULL )
 	{
-		THROW_ERR(9999, << "No such user";
+		THROW_ERR(9999, << "No such user");
 	};
 
 	std::string sPwd = row[0];
 	mysql_free_result(result);
 	return sPwd;
 }
- 

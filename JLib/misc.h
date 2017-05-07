@@ -39,7 +39,9 @@ namespace jlib
 #define THROW_ERR( zCode, zText )						\
 {														\
 	jlib::CErrorInfo	vErrorInfo(zCode, __FILE__ );	\
-	vErrorInfo.GetStream() zText;						\
+	std::ostringstream	ss;								\
+	ss zText;						                    \
+	vErrorInfo.SetText( ss.str() );						\
 	throw vErrorInfo;									\
 }
 
@@ -51,16 +53,25 @@ namespace jlib
 	public:
 		CErrorInfo() { mCode = 0; }
 		CErrorInfo(__int32 vCode, const char *pzSrcFile);
-
-		std::ostringstream& GetStream() { return mStream; }
-		std::string GetText() { return mStream.str(); }
+		~CErrorInfo() {}
+		CErrorInfo(CErrorInfo& ei)
+		{
+			msSrcFile = ei.msSrcFile;
+			mCode = ei.mCode;
+			msText = ei.msText;
+		}
+		std::string GetText() { return msText; }
 		std::string GetSrcFile() { return msSrcFile; }
 		__int32 GetCode() { return mCode; }
+
+		void SetText(const std::string& sText ) { msText = sText; }
+		void SetSrcFile(const std::string& sSrcFile) { msSrcFile = sSrcFile; }
+		void GetCode(__int32 vCode ) { mCode = vCode; }
 
 	private:
 		std::string						msSrcFile;
 		__int32							mCode;
-		std::ostringstream				mStream;
+		std::string 					msText;
 	};
 
 };	// namespace jlib
