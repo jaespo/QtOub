@@ -1,11 +1,11 @@
 // LogonServer.cpp : Defines the entry point for the console application.
 //
-
-#include "stdafx.h"
+#include <iostream>
 #include "..\JLib\tcp.h"
 #include "..\OubLib\oubmsg.h"
 #include "LogonHandler.h"
 #include "..\JLib\trace.h"
+#include "..\OubDb\OubDb.h"
 
 //
 // Need to link with Ws2_32.lib

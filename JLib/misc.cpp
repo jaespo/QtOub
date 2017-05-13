@@ -13,3 +13,4 @@ jlib::CErrorInfo::CErrorInfo(__int32 vCode, const char *pzSrcFile)
 	mCode = vCode;
 	msSrcFile = pzSrcFile;
 }
+

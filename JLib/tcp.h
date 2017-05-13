@@ -37,23 +37,60 @@
 
 namespace jlib
 {
-
 	//
-	//  A class that represents a socket
+	//	The following class is static and is used to initialize
+	//	the socket library.
 	//
-	class CSocket
+	class CSocketInitializer
 	{
 	public:
-		typedef std::shared_ptr<CSocket>	Yq;
+		CSocketInitializer();
+		~CSocketInitializer();
 
-		CSocket(SOCKET vSocket) { mSocket = vSocket; }
-		~CSocket();
+	private:
+		static CSocketInitializer	mgInst;
+	};
+
+	//
+	//  A class that represents a socket as used by a server
+	//
+	class CSvrSocket
+	{
+	public:
+		typedef std::shared_ptr<CSvrSocket>	Yq;
+
+		CSvrSocket(SOCKET vSocket) { mSocket = vSocket; }
+		~CSvrSocket();
 
 		bool ReadUpdate(CReq& rReq);
 		void Reply(CRsp& rRsp);
 
 	private:
 		SOCKET		mSocket;
+	};
+
+	//
+	//  A class that represents a socket as used by a client
+	//
+	class CClientSocket
+	{
+	public:
+		typedef std::shared_ptr<CClientSocket>	Yq;
+
+		CClientSocket(
+			const std::string&		rsIpAddr,
+			const std::string&		rsPort );
+		~CClientSocket() {}
+
+		void Connect(); ...
+		void Disconnect(); ...
+		void SetReqTimeout(__int32 vMillisecs);...
+		bool WriteRead(CReq& rReq, CRsp& rRsp);...
+
+	private:
+		std::string&		msIpAddr;
+		std::string&		msPort;
+		SOCKET				mWsaSocket;
 	};
 
 	//
@@ -65,14 +102,14 @@ namespace jlib
 		typedef std::shared_ptr<CHandler>	Yq;
 		virtual ~CHandler() {}
 
-		CSocket::Yq GetSocket() { return mqSocket; }
-		void RunLoop(CSocket::Yq qSocket);
+		CSvrSocket::Yq GetSocket() { return mqSocket; }
+		void RunLoop(CSvrSocket::Yq qSocket);
 		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp) = 0;
 
-		static void RunThread(CHandler::Yq qHandler, CSocket::Yq qSocket);
+		static void RunThread(CHandler::Yq qHandler, CSvrSocket::Yq qSocket);
 
 	private:
-		std::shared_ptr<CSocket>		mqSocket;
+		std::shared_ptr<CSvrSocket>		mqSocket;
 	};
 
 	//
@@ -82,7 +119,7 @@ namespace jlib
 	class CListener
 	{
 	public:
-		void InitListener(const std::string& rsIpaddr, const std::string& vPort);
+		void InitListener(const std::string& rsIpaddr, const std::string& rsPort);
 		void ListenLoop();
 
 	private:

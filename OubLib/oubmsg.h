@@ -38,10 +38,18 @@ namespace oub
 	//
 	class CLogonRsp : public jlib::CRsp
 	{
+	public:
+		enum ERspCode
+		{
+			kRcOk,
+			kRcDbError,
+			kRcUserNotFound,
+			kRcBadPassword
+		};
+
 		//
 		//	All of the members are in the base CRsp
 		//
-		
 		std::string traceStr() const;
 
 	};

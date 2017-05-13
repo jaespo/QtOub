@@ -5,19 +5,25 @@
 #include "..\JLib\misc.h"
 #include "OubDb.h"
 
-COubDb::COubDb()
+//
+//	Statics
+//
+oub::COubDbInitializer oub::COubDbConnection::mgOubDbInitializer;
+
+oub::COubDbConnection::COubDbConnection()
 {
 }
 
 
-COubDb::~COubDb()
+oub::COubDbConnection::~COubDbConnection()
 {
+	mysql_thread_end();
 }
 
 //
-//	Opens the database and throws an error on failure
+//	Opens the database connection and throws an error on failure
 //
-void COubDb::InitOubDb()
+void oub::COubDbConnection::InitOubDbConnection()
 {
 	mCon = mysql_init(NULL);
 	if (mCon == NULL)
@@ -44,7 +50,9 @@ void COubDb::InitOubDb()
 //
 //	returns the password for a user id
 //
-std::string COubDb::GetPasswordForUser(const std::string& sUser)
+std::string oub::COubDbConnection::GetPasswordForUser(
+	const std::string&	sUser, 
+	bool&				rbNotFound)
 {
 	//
 	//	Query the db
@@ -77,10 +85,29 @@ std::string COubDb::GetPasswordForUser(const std::string& sUser)
 	row = mysql_fetch_row(result);
 	if (row == NULL )
 	{
-		THROW_ERR(9999, << "No such user");
+		mysql_free_result(result);
+		rbNotFound = true;
+		return "";
 	};
 
 	std::string sPwd = row[0];
 	mysql_free_result(result);
+	rbNotFound = false;
 	return sPwd;
+}
+
+//
+//	initialzes the mysql library
+//
+oub::COubDbInitializer::COubDbInitializer()
+{
+	mysql_library_init(0, NULL, NULL);
+}
+
+//
+//	deinitizes the mysql library
+//
+oub::COubDbInitializer::~COubDbInitializer()
+{
+	mysql_library_end();
 }

@@ -1,4 +1,6 @@
 #include <sstream>
+#include <algorithm>
+#include <cstring>
 #include "msg.h"
 
 //
@@ -17,6 +19,36 @@ std::string jlib::CReq::traceStr() const
 	return ss.str();
 }
 
+// 
+//  ctor for a CRsp
+//
+jlib::CRsp::CRsp()
+{
+	memset(mErrorText, 0, sizeof(mErrorText));
+}
+
+//
+//	Sets the error text, truncating it to the max size of the
+//	field.
+//
+void jlib::CRsp::SetErrorText(const std::string& rTxt)
+{
+	size_t vLen = std::max(rTxt.length(), sizeof(mErrorText)) - 1;
+	memcpy(mErrorText, rTxt.c_str(), vLen );
+	memset(&mErrorText[vLen], 0, sizeof(mErrorText) - vLen );
+}
+
+//
+//	Initizes a response from its request
+//
+void jlib::CRsp::InitFromReq(const CReq& rReq)
+{
+	mReqCode = rReq.mReqCode;
+	mReqSeq = rReq.mReqSeq;
+	mMsgLen = sizeof(*this);
+	memset(mErrorText, 0, sizeof(mErrorText));
+}
+
 //
 //	Returns a string that traces a response
 //
@@ -29,3 +61,5 @@ std::string jlib::CRsp::traceStr() const
 	ss << "ErrorText:      " << mErrorText << "\n";
 	return ss.str();
 }
+
+

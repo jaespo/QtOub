@@ -7,18 +7,36 @@
 #define			kDbUser			"jeff"
 #define			kDbPassword		"jrfftypaep"
 #define			kDbName 		"oubdb"
-	
-class COubDb
-{
- 
-public:
-	COubDb();
-	~COubDb();
 
-	void InitOubDb();	
-	std::string GetPasswordForUser(const std::string& sUser);
+namespace oub {
+	//
+	//	static class that initialises the mysql library
+	//
+	class COubDbInitializer
+	{
 
-private:
-	MYSQL*		mCon;
-};
+	public:
+		COubDbInitializer();
+		~COubDbInitializer();
 
+	};
+	//
+	//	instantiate one of these per thread that uses the database
+	//
+	class COubDbConnection
+	{
+
+	public:
+		COubDbConnection();
+		~COubDbConnection();
+
+		void InitOubDbConnection();
+		std::string GetPasswordForUser(const std::string& sUser, bool& rbNotFound);
+
+	private:
+		MYSQL*						mCon;
+		static COubDbInitializer	mgOubDbInitializer;
+	};
+
+
+}

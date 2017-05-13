@@ -7,16 +7,16 @@
 
 int main()
 {
-	COubDb			vDb;
-	std::string		sPassword;
+	oub::COubDbConnection	vDb;
+	std::string				sPassword;
+	bool					bNotFound;
 	try {
-		vDb.InitOubDb();
+		vDb.InitOubDbConnection();
 
-		sPassword = vDb.GetPasswordForUser("jeff");
-		std::cout << "jeff " << sPassword << std::endl;
-
-		sPassword = vDb.GetPasswordForUser("eff");
-		std::cout << "eff " << sPassword << std::endl;
+		sPassword = vDb.GetPasswordForUser("jeff", bNotFound);
+		std::cout << "jeff " << sPassword << ", bNotFound=" << bNotFound << std::endl;
+		sPassword = vDb.GetPasswordForUser("eff", bNotFound );
+		std::cout << "eff " << sPassword << ", bNotFound=" << bNotFound << std::endl;
 	}
 	catch (jlib::CErrorInfo e)
 	{

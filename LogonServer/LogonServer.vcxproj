@@ -75,6 +75,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files\MariaDB 10.1\include;C:\Program Files\MariaDB 10.1\include\mysql;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\MariaDB 10.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,7 +99,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -107,7 +110,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies />
+      <AdditionalDependencies>libmysql.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -162,6 +165,9 @@
   <ItemGroup>
     <ProjectReference Include="..\JLib\JLib.vcxproj">
       <Project>{794f0bb9-0a36-446e-b27d-76aba32afea0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\OubDb\OubDb.vcxproj">
+      <Project>{aacdb4b5-8aeb-4d73-b77f-7a16ced96a71}</Project>
     </ProjectReference>
     <ProjectReference Include="..\OubLib\OubLib.vcxproj">
       <Project>{e85fa2ac-5cad-4647-9f17-eb5020413b0e}</Project>

@@ -50,6 +50,10 @@ namespace jlib
 	class CRsp : public CMsg
 	{
 	public:
+		CRsp();
+		void SetErrorText(const std::string& rTxt);
+		void InitFromReq(const CReq& rReq);
+
 		YReqCode			mReqCode;
 		YReqSeq				mReqSeq;
 		YRspCode			mRspCode;
