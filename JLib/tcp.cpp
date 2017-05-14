@@ -12,101 +12,175 @@
 //
 //	Statics
 //
-jlib::CSocketInitializer	CSocketInitializer::mgInst;
+jlib::CSocketInitializer	jlib::CSocketInitializer::mgInst;
+
+jlib::CBaseSocket::CBaseSocket(
+	SOCKET					vWsaSocket,
+	const std::string&		rsIpAddr,
+	const std::string&		rsPort)
+{
+	mWsaSocket = vWsaSocket;
+	msIpAddr = rsIpAddr;
+	msPort = rsPort;
+}
+
+//
+//	dtor for the base socket 
+//
+jlib::CBaseSocket::~CBaseSocket()
+{
+	Disconnect();
+}
+
+//
+//	disconnect from the socket.  If it is not connected, 
+//	do nothing.  Ignores errors are we may just be trying to shutdown
+//
+void jlib::CBaseSocket::Disconnect()
+{
+	if (mWsaSocket != INVALID_SOCKET)
+	{
+		closesocket(mWsaSocket);
+		mWsaSocket = INVALID_SOCKET;
+	}
+	TR("tcp",
+		<< GetIpAndPort()
+		<< ": Disconnected");
+}
+
+//
+//	sends the specified buffer.
+//
+void jlib::CBaseSocket::WriteMsg( const CMsg& rMsg )
+{
+	int				iSendResult;
+
+	iSendResult = send(mWsaSocket, (const char*)&rMsg, rMsg.mMsgLen, 0);
+	if (iSendResult == SOCKET_ERROR)
+	{
+		long err = WSAGetLastError();
+		THROW_ERR(7,
+			<< GetIpAndPort()
+			<< ": send failed with error: "
+			<< err);
+	}
+	TR("tcp",
+		<< GetIpAndPort() 
+		<< ": sent "
+		<< rMsg.mMsgLen
+		<< " bytes");
+}
 
 //
 //	ctor for a client socket
 //
-jlib::CClientSocket::CClientSocket(
-	const std::string&		rsIpAddr,
-	const std::string&		rsPort)
+void jlib::CClientSocket::Connect()
 {
-	msIpAddr = rsIpAddr;
-	msPort = rsPort;
-	mWsaSocket = INVALID_SOCKET;
-}
-	//
-	//	ctor for a client socket
-	//
-	jlib::CClientSocket::CClientSocket(
-		const std::string&		rsIpAddr,
-		const std::string&		rsPort)
+	struct addrinfo		*result = NULL,
+						*ptr = NULL,
+						hints;
+	int					iResult;
+
+	if (mWsaSocket != INVALID_SOCKET)
 	{
-		struct addrinfo			*result = NULL,
-			*ptr = NULL,
-			hints;
-		int						iResult;
+		THROW_ERR( 9999, 
+			<< GetIpAndPort() 
+			<< ": already connected" )
+	}
 
-		msIpAddr = rsIpAddr;
-		msPort = rsPort;
-		mWsaSocket = INVALID_SOCKET;
+	ZeroMemory(&hints, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
 
-		ZeroMemory(&hints, sizeof(hints));
-		hints.ai_family = AF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_protocol = IPPROTO_TCP;
+	//
+	//	Resolve the server address and port
+	//
+	iResult = getaddrinfo(msIpAddr.c_str(), msPort.c_str(), &hints, &result);
+	if (iResult != 0)
+	{
+		THROW_ERR(9999, 
+			<< GetIpAndPort() 
+			<< ": getaddrinfo failed with error: " 
+			<< iResult);
+	}
 
+	//
+	//	Attempt to connect to an address until one succeeds
+	//
+	for (ptr = result; ptr != NULL; ptr = ptr->ai_next)
+	{
 		//
-		//	Resolve the server address and port
+		//	Create a SOCKET for connecting to server
 		//
-		iResult = getaddrinfo(msIpAddr.c_str(), msPort.c_str(), &hints, &result);
-		if (iResult != 0)
+		mWsaSocket = socket(ptr->ai_family, ptr->ai_socktype,
+			ptr->ai_protocol);
+		if (mWsaSocket == INVALID_SOCKET)
 		{
-			printf("getaddrinfo failed with error: %d\n", iResult);
-			THROW_ERR(9999, << "getaddrinfo failed with error: " << iResult);
+			THROW_ERR(9999, 
+				<< GetIpAndPort()
+				<< ": socket() failed with error: "
+				<< WSAGetLastError());
 		}
 
 		//
-		//	Attempt to connect to an address until one succeeds
+		//	Connect to server.
 		//
-		for (ptr = result; ptr != NULL; ptr = ptr->ai_next)
+		iResult = connect(mWsaSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+		if (iResult == SOCKET_ERROR) 
 		{
-			//
-			//	Create a SOCKET for connecting to server
-			//
-			mWsaSocket = socket(ptr->ai_family, ptr->ai_socktype,
-				ptr->ai_protocol);
-			if (mWsaSocket == INVALID_SOCKET)
-			{
-				THROW_ERR(9999, << "socket failed with error: "
-					<< WSAGetLastError());
-			}
-
-			//
-			//	Connect to server.
-			//
-			iResult = connect(mWsaSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-			if (iResult == SOCKET_ERROR) {
-				closesocket(mWsaSocket);
-				mWsaSocket = INVALID_SOCKET;
-				continue;
-			}
-			break;
+			closesocket(mWsaSocket);
+			mWsaSocket = INVALID_SOCKET;
+			continue;
 		}
+		break;
+	}
 
-		freeaddrinfo(result);
+	freeaddrinfo(result);
 
-		if (ConnectSocket == INVALID_SOCKET) {
-			printf("Unable to connect to server!\n");
-			WSACleanup();
-			return 1;
-		}
+	if ( mWsaSocket == INVALID_SOCKET ) 
+	{
+		THROW_ERR(9999,
+			<< GetIpAndPort()
+			<< ": unable to connect");
+	}
 
+	TR("tcp",
+		<< GetIpAndPort()
+		<< ": Connected");
+}
 
-
+//
+//	Sets the timeout on calls to WriteRead()
+//
+void jlib::CClientSocket::SetReqTimeout(__int32 vMillisecs)
+{
+	if (!setsockopt(mWsaSocket, SOL_SOCKET, SO_RCVTIMEO,
+		(const char*)&vMillisecs, sizeof(vMillisecs)))
+	{
+		THROW_ERR(9999, 
+			<< GetIpAndPort()
+			<< ": setsocketop failed, error: "
+			<< WSAGetLastError() );
+	}
+	TR("tcp",
+		<< GetIpAndPort()
+		<< "SetReqTimeout to " << vMillisecs << "ms");
 }
 
 //
 //	Called when the handler thread starts
 //
-void jlib::CHandler::RunLoop(CSvrSocket::Yq qSocket)
+void jlib::CHandler::RunLoop(CServerSocket::Yq qSocket)
 {
 	char					pReqBuf[DEFAULT_BUFLEN];
 	char					pRspBuf[DEFAULT_BUFLEN];
 	CReq*					pReq = (CReq*)pReqBuf;
 	CRsp*					pRsp = (CRsp*)pRspBuf;
 
-	TR("tcp", << "Handler run loop started");
+	TR("tcp", 
+		<< qSocket->GetIpAndPort() 
+		<< ": handler run loop started");
 	mqSocket = qSocket;
 	//
 	//	Loop reading requests
@@ -115,7 +189,7 @@ void jlib::CHandler::RunLoop(CSvrSocket::Yq qSocket)
 	{
 		try
 		{
-			bool bEof = mqSocket->ReadUpdate(*pReq);
+			bool bEof = mqSocket->ReadReq(*pReq);
 			if (bEof)
 				return;
 		}
@@ -133,7 +207,7 @@ void jlib::CHandler::RunLoop(CSvrSocket::Yq qSocket)
 //
 //	Called by std::thread when it wants to start running the thread
 //
-void jlib::CHandler::RunThread(CHandler::Yq qHandler, CSvrSocket::Yq qSocket)
+void jlib::CHandler::RunThread(CHandler::Yq qHandler, CServerSocket::Yq qSocket)
 {
 	qHandler->RunLoop(qSocket);
 }
@@ -141,10 +215,12 @@ void jlib::CHandler::RunThread(CHandler::Yq qHandler, CSvrSocket::Yq qSocket)
 //
 //	ctor of the listener
 //
-void jlib::CListener::InitListener(const std::string& rsIpaddr, const std::string& vPort)
+void jlib::CListener::InitListener(
+	const std::string&	rsIpAddr, 
+	const std::string&	rsPort)
 {
-	msIpaddr = rsIpaddr;
-	msPort = vPort;
+	msIpAddr = rsIpAddr;
+	msPort = rsPort;
 }
 
 //
@@ -153,13 +229,15 @@ void jlib::CListener::InitListener(const std::string& rsIpaddr, const std::strin
 void jlib::CListener::ListenLoop()
 {
 	int					iResult;
-	SOCKET				ListenSocket = INVALID_SOCKET;
-	SOCKET				ClientSocket = INVALID_SOCKET;
+	SOCKET				vListenSocket = INVALID_SOCKET;
+	SOCKET				vClientSocket = INVALID_SOCKET;
 
 	struct addrinfo*	result = NULL;
 	struct addrinfo		hints;
 
-	TR("tcp", << "Listener::ListenLoop started");
+	TR("tcp", 
+		<< GetIpAndPort()
+		<< ": CListener::ListenLoop started");
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -173,30 +251,38 @@ void jlib::CListener::ListenLoop()
 	iResult = getaddrinfo(NULL, msPort.c_str(), &hints, &result);
 	if (iResult != 0)
 	{
-		THROW_ERR(2, << "getaddrinfo failed with error: " << iResult);
+		THROW_ERR(2, 
+			<< GetIpAndPort() 
+			<< "getaddrinfo failed with error: " 
+			<< iResult);
 	}
 
 	//
 	// Create a SOCKET for connecting to server
 	//
-	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (ListenSocket == INVALID_SOCKET)
+	vListenSocket = socket(
+		result->ai_family, result->ai_socktype, result->ai_protocol);
+	if (vListenSocket == INVALID_SOCKET)
 	{
 		long err = WSAGetLastError();
 		freeaddrinfo(result);
-		THROW_ERR(3, << "socket failed with error: " << err);
+		THROW_ERR(3, 
+			<< GetIpAndPort()
+			<< ": socket() failed with error: " << err);
 	}
 
 	//
 	// Setup the TCP listening socket
 	//
-	iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+	iResult = bind(vListenSocket, result->ai_addr, (int)result->ai_addrlen);
 	if (iResult == SOCKET_ERROR)
 	{
 		long err = WSAGetLastError();
 		freeaddrinfo(result);
-		closesocket(ListenSocket);
-		THROW_ERR(4, << "bind failed with error: " << err);
+		closesocket(vListenSocket);
+		THROW_ERR(4, 
+			<< GetIpAndPort()
+			<< ": bind failed with error: " << err);
 	}
 
 	freeaddrinfo(result);
@@ -204,13 +290,19 @@ void jlib::CListener::ListenLoop()
 	//
 	//	Listen for a connection
 	//
-	TR("tcp", << "posting listen on port " << msPort);
-	iResult = listen(ListenSocket, SOMAXCONN);
+	TR("tcp", 
+		<< GetIpAndPort() 
+		<< ": posting listen on port " 
+		<< msPort);
+	iResult = listen(vListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR)
 	{
 		long err = WSAGetLastError();
-		closesocket(ListenSocket);
-		THROW_ERR(5, << "listen failed with error: " << err);
+		closesocket(vListenSocket);
+		THROW_ERR(5, 
+			<< GetIpAndPort() 
+			<< ": listen failed with error: " 
+			<< err);
 	}
 
 	while (true)
@@ -218,22 +310,30 @@ void jlib::CListener::ListenLoop()
 		//
 		//	Accept a client socket
 		//
-		TR("tcp", << "posting accept");
-		ClientSocket = accept(ListenSocket, NULL, NULL);
-		TR("tcp", << "accept completed");
-		if (ClientSocket == INVALID_SOCKET)
+		TR("tcp", 
+			<< GetIpAndPort()
+			<< ": posting accept");
+		vClientSocket = accept(vListenSocket, NULL, NULL);
+		TR("tcp", 
+			<< GetIpAndPort()
+			<< ": accept completed");
+		if (vClientSocket == INVALID_SOCKET)
 		{
 			long err = WSAGetLastError();
-			closesocket(ListenSocket);
-			THROW_ERR(6, << "accept failed with error: " << err);
+			closesocket(vListenSocket);
+			THROW_ERR(6, 
+				<< GetIpAndPort()
+				<< ": accept failed with error: " 
+				<< err);
 		}
 
 		//
 		//	Start the handler thread
 		//
-		CSvrSocket::Yq 	qSocket(new CSvrSocket(ClientSocket));
-		CHandler::Yq	qHandler(CreateHandler());
-		YqThread		qThread(
+		CServerSocket::Yq 	qSocket(
+			new CServerSocket(vClientSocket, msIpAddr, msPort));
+		CHandler::Yq		qHandler(CreateHandler());
+		YqThread			qThread( 
 			new std::thread(CHandler::RunThread, qHandler, qSocket));
 		mThreadVect.push_back(qThread);
 	}
@@ -270,7 +370,7 @@ jlib::CSocketInitializer::~CSocketInitializer()
 //
 //	dtor for a CSocket
 //
-jlib::CSvrSocket::~CSvrSocket()
+jlib::CServerSocket::~CServerSocket()
 {
 	shutdown(mSocket, SD_BOTH);
 	closesocket(mSocket);
@@ -281,7 +381,7 @@ jlib::CSvrSocket::~CSvrSocket()
 //
 //	returns an EOF flag
 //
-bool jlib::CSvrSocket::ReadUpdate(CReq& rReq)
+bool jlib::CServerSocket::ReadReq(CReq& rReq)
 {
 	char			pBuf[DEFAULT_BUFLEN];
 	__int32			vTotCountRead = 0;
@@ -290,7 +390,9 @@ bool jlib::CSvrSocket::ReadUpdate(CReq& rReq)
 	bool			bGotLen = false;
 	bool			bDone = false;
 
-	TR("tcp", << "ReadUpdate initiated");
+	TR("tcp", 
+		<< GetIpAndPort()
+		<< ": ReadReq initiated");
 	//
 	//	The data may come in in clumps, so loop reading them until the request
 	//	fills up.
@@ -302,10 +404,14 @@ bool jlib::CSvrSocket::ReadUpdate(CReq& rReq)
 		//
 		vCountRead = recv(mSocket, pBuf + vTotCountRead,
 			DEFAULT_BUFLEN - vTotCountRead, 0);
-		TR("tcp", << "recv() completed with " << vCountRead << " bytes");
+		TR("tcp", 
+			<< GetIpAndPort() 
+			<< "recv() completed with " 
+			<< vCountRead 
+			<< " bytes");
 		if (vCountRead == 0)
 		{
-			TR("tcp", << "ReadUpdate EOF");
+			TR("tcp", << "ReadReq EOF");
 			return true;
 		}
 
@@ -328,25 +434,24 @@ bool jlib::CSvrSocket::ReadUpdate(CReq& rReq)
 			memcpy(&rReq, pBuf, vTotCountRead);
 		}
 	}
-	TR("tcp", << "ReadUpdate completed with " << vTotCountRead << " bytes");
+	TR("tcp", 
+		<< GetIpAndPort() 
+		<< ": ReadUpdate completed with " 
+		<< vTotCountRead 
+		<< " bytes");
 	return false;
 }
 
 //
 //	Writes a reply to request
 //
-void jlib::CSvrSocket::Reply(CRsp& rRsp)
+void jlib::CServerSocket::Reply(CRsp& rRsp)
 {
-	int				iSendResult;
-
-	iSendResult = send(mSocket, (const char *)&rRsp, rRsp.mMsgLen, 0);
-	if (iSendResult == SOCKET_ERROR)
-	{
-		long err = WSAGetLastError();
-		THROW_ERR(7, << "send failed with error: " << err);
-		closesocket(mSocket);
-	}
-	TR("tcp", << "Replied with " << rRsp.mMsgLen << " bytes");
+	TR("tcp",
+		<< GetIpAndPort()
+		<< ": replying with rsp "
+		<< rRsp.traceStr());
+	WriteBuf((const char*)&rRsp, rRsp.mMsgLen);
 }
 
 

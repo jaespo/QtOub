@@ -16,8 +16,6 @@ namespace jlib
 	public:
 		virtual ~CMsg() {}
 
-		static const int kLabelWidth = 16;
-
 		//
 		//	Inclusive
 		//

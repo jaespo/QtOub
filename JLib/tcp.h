@@ -52,45 +52,69 @@ namespace jlib
 	};
 
 	//
-	//  A class that represents a socket as used by a server
+	//	The base class for the CClientSocket and CServerSocket 
+	//	classes
 	//
-	class CSvrSocket
+	class CBaseSocket
 	{
 	public:
-		typedef std::shared_ptr<CSvrSocket>	Yq;
+		CBaseSocket(
+			SOCKET					vWsaSocket,
+			const std::string&		rsIpAddr,
+			const std::string&		rsPort);
+		~CBaseSocket();
 
-		CSvrSocket(SOCKET vSocket) { mSocket = vSocket; }
-		~CSvrSocket();
+		std::string GetIpAndPort() { return msIpAddr + ":" + msPort; }
+		void Disconnect();
 
-		bool ReadUpdate(CReq& rReq);
-		void Reply(CRsp& rRsp);
-
-	private:
-		SOCKET		mSocket;
+	protected:
+		void WriteMsg( const CMsg& rMsg );
+		void ReadMsg( const CMsg& rMsg );
+		// todo replace all calls to recv with this
+		std::string 		msIpAddr;
+		std::string			msPort;
+		SOCKET				mWsaSocket;
 	};
 
 	//
 	//  A class that represents a socket as used by a client
 	//
-	class CClientSocket
+	class CClientSocket : public CBaseSocket
 	{
 	public:
 		typedef std::shared_ptr<CClientSocket>	Yq;
 
 		CClientSocket(
 			const std::string&		rsIpAddr,
-			const std::string&		rsPort );
+			const std::string&		rsPort)
+			: CBaseSocket(INVALID_SOCKET, rsIpAddr, rsPort) {}
 		~CClientSocket() {}
 
-		void Connect(); ...
-		void Disconnect(); ...
-		void SetReqTimeout(__int32 vMillisecs);...
-		bool WriteRead(CReq& rReq, CRsp& rRsp);...
+		void Connect();
+		void SetReqTimeout(__int32 vMillisecs);
+		bool WriteRead(CReq& rReq, CRsp& rRsp);
+	};
+
+	//
+	//  A class that represents a socket as used by a server
+	//
+	class CServerSocket : public CBaseSocket
+	{
+	public:
+		typedef std::shared_ptr<CServerSocket>	Yq;
+
+		CServerSocket(
+			SOCKET					vWsaSocket,
+			const std::string&		rsIpAddr,
+			const std::string&		rsPort)
+			: CBaseSocket(vWsaSocket, rsIpAddr, rsPort) {}
+		~CServerSocket();
+
+		bool ReadReq(CReq& rReq);
+		void Reply(CRsp& rRsp);
 
 	private:
-		std::string&		msIpAddr;
-		std::string&		msPort;
-		SOCKET				mWsaSocket;
+		SOCKET		mSocket;
 	};
 
 	//
@@ -102,14 +126,14 @@ namespace jlib
 		typedef std::shared_ptr<CHandler>	Yq;
 		virtual ~CHandler() {}
 
-		CSvrSocket::Yq GetSocket() { return mqSocket; }
-		void RunLoop(CSvrSocket::Yq qSocket);
+		CServerSocket::Yq GetSocket() { return mqSocket; }
+		void RunLoop(CServerSocket::Yq qSocket);
 		virtual void DoProcessReq(const CReq& rReq, const CRsp& rRsp) = 0;
 
-		static void RunThread(CHandler::Yq qHandler, CSvrSocket::Yq qSocket);
+		static void RunThread(CHandler::Yq qHandler, CServerSocket::Yq qSocket);
 
 	private:
-		std::shared_ptr<CSvrSocket>		mqSocket;
+		std::shared_ptr<CServerSocket>		mqSocket;
 	};
 
 	//
@@ -121,12 +145,13 @@ namespace jlib
 	public:
 		void InitListener(const std::string& rsIpaddr, const std::string& rsPort);
 		void ListenLoop();
+		std::string GetIpAndPort() { return msIpAddr + ":" + msPort; }
 
 	private:
 		typedef std::shared_ptr<std::thread>	YqThread;
 		virtual std::shared_ptr<CHandler> CreateHandler() = 0;
 
-		std::string				msIpaddr;
+		std::string				msIpAddr;
 		std::string				msPort;
 		std::vector<YqThread>	mThreadVect;
 	};
