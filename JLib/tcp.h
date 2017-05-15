@@ -69,8 +69,8 @@ namespace jlib
 
 	protected:
 		void WriteMsg( const CMsg& rMsg );
-		void ReadMsg( const CMsg& rMsg );
-		// todo replace all calls to recv with this
+		bool ReadMsg( const CMsg& rMsg );
+ 
 		std::string 		msIpAddr;
 		std::string			msPort;
 		SOCKET				mWsaSocket;

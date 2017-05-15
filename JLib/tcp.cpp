@@ -49,6 +49,82 @@ void jlib::CBaseSocket::Disconnect()
 }
 
 //
+//	reads a message from the socket.  Returns an EOF flag
+//
+bool jlib::CBaseSocket::ReadMsg(const CMsg& rMsg)
+{
+	char			pBuf[DEFAULT_BUFLEN];
+	__int32			vTotCountRead = 0;
+	__int32			vCountRead;
+	__int16			vReqSize;
+	bool			bGotLen = false;
+	bool			bDone = false;
+
+	TR("tcp",
+		<< GetIpAndPort()
+		<< ": ReadMsg initiated");
+	//
+	//	The data may come in in clumps, so loop reading them until the request
+	//	fills up.
+	//
+	while (!bDone)
+	{
+		//
+		//	Read some data and return if we are at EOF
+		//
+		vCountRead = recv(mWsaSocket, pBuf + vTotCountRead,
+			DEFAULT_BUFLEN - vTotCountRead, 0);
+		TR("tcp",
+			<< GetIpAndPort()
+			<< "recv() completed with "
+			<< vCountRead
+			<< " bytes");
+		if (vCountRead == 0)
+		{
+			TR("tcp", 
+				<< GetIpAndPort()
+				<< ": ReadMsg EOF");
+			return true;
+		}
+
+		//
+		//	Extract the request size if we havent done so already
+		//
+		vTotCountRead += vCountRead;
+		if (!bGotLen && vTotCountRead > sizeof(vReqSize))
+		{
+			bGotLen = true;
+			memcpy(&vReqSize, pBuf, sizeof(vReqSize));
+		}
+
+		//
+		//	check to see if we have the full request
+		//
+		if (vTotCountRead > vReqSize)
+		{
+			THROW_ERR(9999,
+				<< GetIpAndPort()
+				<< ": too much data received, expected "
+				<< vReqSize
+				<< " got "
+				<< vTotCountRead);
+		}
+
+		bDone = (vTotCountRead = vReqSize);
+		if (bDone)
+		{
+			memcpy( (void *)&rMsg, pBuf, vTotCountRead);
+		}
+	}
+	TR("tcp",
+		<< GetIpAndPort()
+		<< ": ReadUpdate completed with "
+		<< vTotCountRead
+		<< " bytes");
+	return false;
+}
+
+//
 //	sends the specified buffer.
 //
 void jlib::CBaseSocket::WriteMsg( const CMsg& rMsg )
@@ -383,63 +459,7 @@ jlib::CServerSocket::~CServerSocket()
 //
 bool jlib::CServerSocket::ReadReq(CReq& rReq)
 {
-	char			pBuf[DEFAULT_BUFLEN];
-	__int32			vTotCountRead = 0;
-	__int32			vCountRead;
-	__int16			vReqSize;
-	bool			bGotLen = false;
-	bool			bDone = false;
-
-	TR("tcp", 
-		<< GetIpAndPort()
-		<< ": ReadReq initiated");
-	//
-	//	The data may come in in clumps, so loop reading them until the request
-	//	fills up.
-	//
-	while (!bDone)
-	{
-		//
-		//	Read some data and return if we are at EOF
-		//
-		vCountRead = recv(mSocket, pBuf + vTotCountRead,
-			DEFAULT_BUFLEN - vTotCountRead, 0);
-		TR("tcp", 
-			<< GetIpAndPort() 
-			<< "recv() completed with " 
-			<< vCountRead 
-			<< " bytes");
-		if (vCountRead == 0)
-		{
-			TR("tcp", << "ReadReq EOF");
-			return true;
-		}
-
-		//
-		//	Extract the request size if we havent done so already
-		//
-		vTotCountRead += vCountRead;
-		if (!bGotLen && vTotCountRead > sizeof(vReqSize))
-		{
-			bGotLen = true;
-			memcpy(&vReqSize, pBuf, sizeof(vReqSize));
-		}
-
-		//
-		//	check to see if we have the full request
-		//
-		bDone = (vTotCountRead >= vReqSize);
-		if (bDone)
-		{
-			memcpy(&rReq, pBuf, vTotCountRead);
-		}
-	}
-	TR("tcp", 
-		<< GetIpAndPort() 
-		<< ": ReadUpdate completed with " 
-		<< vTotCountRead 
-		<< " bytes");
-	return false;
+	return ReadMsg( rReq );
 }
 
 //
@@ -451,7 +471,7 @@ void jlib::CServerSocket::Reply(CRsp& rRsp)
 		<< GetIpAndPort()
 		<< ": replying with rsp "
 		<< rRsp.traceStr());
-	WriteBuf((const char*)&rRsp, rRsp.mMsgLen);
+	WriteMsg( rRsp );
 }
 
 
