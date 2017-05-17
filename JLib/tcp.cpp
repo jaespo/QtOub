@@ -110,7 +110,7 @@ bool jlib::CBaseSocket::ReadMsg(const CMsg& rMsg)
 				<< vTotCountRead);
 		}
 
-		bDone = (vTotCountRead = vReqSize);
+		bDone = (vTotCountRead == vReqSize);
 		if (bDone)
 		{
 			memcpy( (void *)&rMsg, pBuf, vTotCountRead);
