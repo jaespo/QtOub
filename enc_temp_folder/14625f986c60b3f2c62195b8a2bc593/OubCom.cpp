@@ -45,8 +45,6 @@ void ExecCmd(const std::vector<std::string>& rTokVect)
 		exit(EXIT_SUCCESS);
 	else if (rTokVect[0] == "help" || rTokVect[0] == "h")
 		ExecCmdHelp();
-	else if (rTokVect[0] == "connect" || rTokVect[0] == "c")
-		ExecCmdConnect( rTokVect );
 	else
 		std::cout << "Unknown command: " << rTokVect[0];
 }
