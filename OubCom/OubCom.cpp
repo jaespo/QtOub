@@ -4,12 +4,44 @@
 #include <iostream>
 #include <string>
 #include <cstring>
-#include <vector>
+
+#include "OubCom.h"
+
+void oub::CCmdConnect::Exec()
+{
+	CLogonSvrConnection::GetClientSocket().Connect();
+}
+
+//
+//	Executes the help command
+//
+void oub::CCmdHelp::Exec()
+{
+	std::cout << "h, help		display a list of commands" << std::endl;
+	std::cout << "q, quit		exit OubCom" << std::endl;
+}
+
+//
+//	Executes a command
+//
+void oub::CCmdProcessor::ExecCmd(const std::vector<std::string>& rTokVect)
+{
+	if (rTokVect.empty())
+		return;
+	else if (rTokVect[0] == "quit" || rTokVect[0] == "q")
+		oub::CCmdQuit::Exec();
+	else if (rTokVect[0] == "help" || rTokVect[0] == "h")
+		oub::CCmdHelp::Exec();
+	else if (rTokVect[0] == "connect" || rTokVect[0] == "c")
+		oub::CCmdConnect::Exec();
+	else
+		std::cout << "Unknown command: " << rTokVect[0];
+}
 
 //
 //	Reads a command line and returns a vector of tokens
 //
-void ReadCmd(std::vector<std::string>& rTokVect)
+void oub::CCmdProcessor::ReadCmd(std::vector<std::string>& rTokVect)
 {
 	std::string		sCmdLine;
 	char*			pzArg;
@@ -26,29 +58,16 @@ void ReadCmd(std::vector<std::string>& rTokVect)
 }
 
 //
-//	Executes the help command
+//	Command processer run loop
 //
-void ExecCmdHelp()
+void oub::CCmdProcessor::Run()
 {
-	std::cout << "h, help		display a list of commands" << std::endl;
-	std::cout << "q, quit		exit OubCom" << std::endl;
-}
-
-//
-//	Executes a command
-//
-void ExecCmd(const std::vector<std::string>& rTokVect)
-{
-	if (rTokVect.empty())
-		return;
-	else if (rTokVect[0] == "quit" || rTokVect[0] == "q")
-		exit(EXIT_SUCCESS);
-	else if (rTokVect[0] == "help" || rTokVect[0] == "h")
-		ExecCmdHelp();
-	else if (rTokVect[0] == "connect" || rTokVect[0] == "c")
-		ExecCmdConnect( rTokVect );
-	else
-		std::cout << "Unknown command: " << rTokVect[0];
+	std::vector<std::string>		vTokVect;
+	while (true)
+	{
+		ReadCmd(vTokVect);
+		ExecCmd(vTokVect);
+	}
 }
 
 //
@@ -56,16 +75,13 @@ void ExecCmd(const std::vector<std::string>& rTokVect)
 //
 int main()
 {
-	std::vector<std::string>		vTokVect;
+	oub::CCmdProcessor				vCmdProcessor;
 
 	std::cout << "OubCom ~ Oub Command Line Interpreter" << std::endl;
 	std::cout << "(C) 2017 by Jeffery A Esposito" << std::endl;
 
-	while (true)
-	{
-		ReadCmd(vTokVect);
-		ExecCmd(vTokVect);
-	}
+	vCmdProcessor.Run();
+
 	return 0;
 }
 
