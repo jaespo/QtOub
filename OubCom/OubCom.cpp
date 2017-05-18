@@ -7,6 +7,11 @@
 
 #include "OubCom.h"
 
+//
+//	Statics
+//
+jlib::CClientSocket	oub::CLogonSvrConnection::mClientSocket(LOGONSVR_IP, LOGONSVR_PORT);
+
 void oub::CCmdConnect::Exec()
 {
 	CLogonSvrConnection::GetClientSocket().Connect();
