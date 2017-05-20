@@ -5,6 +5,7 @@
 #include <string>
 #include <cstring>
 
+#include "..\JLib\trace.h"
 #include "OubCom.h"
 
 //
@@ -22,8 +23,18 @@ void oub::CCmdConnect::Exec()
 //
 void oub::CCmdHelp::Exec()
 {
+	std::cout << "c, connect	connect to the logon server" << std::endl;
 	std::cout << "h, help		display a list of commands" << std::endl;
 	std::cout << "q, quit		exit OubCom" << std::endl;
+}
+
+//
+//	Executes the help command
+//
+void oub::CCmdQuit::Exec()
+{
+	std::cout << "bye!" << std::endl;
+	exit(EXIT_SUCCESS);
 }
 
 //
@@ -54,6 +65,7 @@ void oub::CCmdProcessor::ReadCmd(std::vector<std::string>& rTokVect)
 
 	std::cout << "OubCom> ";
 	std::getline(std::cin, sCmdLine);
+	rTokVect.erase(rTokVect.begin(), rTokVect.end());
 	pzArg = strtok_s((char*)sCmdLine.c_str(), " ", &pzNextTok);
 	while (pzArg != NULL)
 	{
@@ -82,6 +94,7 @@ int main()
 {
 	oub::CCmdProcessor				vCmdProcessor;
 
+	TR("OubCom", "Startng Oubcom");
 	std::cout << "OubCom ~ Oub Command Line Interpreter" << std::endl;
 	std::cout << "(C) 2017 by Jeffery A Esposito" << std::endl;
 

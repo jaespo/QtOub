@@ -39,6 +39,6 @@ namespace oub
 	class CCmdQuit
 	{
 	public:
-		static void Exec() { exit(EXIT_SUCCESS); }
+		static void Exec();
 	};
 }

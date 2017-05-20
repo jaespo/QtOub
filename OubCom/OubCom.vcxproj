@@ -105,6 +105,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -149,6 +150,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OubCom.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JLib\JLib.vcxproj">
+      <Project>{794f0bb9-0a36-446e-b27d-76aba32afea0}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

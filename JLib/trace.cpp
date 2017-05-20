@@ -1,9 +1,17 @@
+#include <new>
 #include "trace.h"
 
 //
 //  Statics
 //
-jlib::CTrace           jlib::CTrace::mgInst;
+static int nifty_counter;
+static typename std::aligned_storage<sizeof(jlib::CTrace),
+	alignof(jlib::CTrace)>::type CTrace_buf;
+jlib::CTrace& jlib::gTrace = reinterpret_cast<jlib::CTrace&>( CTrace_buf );
+
+
+// jlib::CTrace::CTrace() {}
+// jlib::CTrace::~CTrace() {}
 
 //
 //  Enables the specfied tag
@@ -32,3 +40,19 @@ bool jlib::CTrace::IsTagActive(const char* pzTag) const
 	it = std::find(mTagList.begin(), mTagList.end(), sTag);
 	return (it != mTagList.end());
 }
+
+//
+//	Static globals initializer
+//
+jlib::CJlibInitializer::CJlibInitializer()
+{
+	if (nifty_counter++ == 0) 
+		new (&jlib::gTrace) CTrace();
+}
+
+jlib::CJlibInitializer::~CJlibInitializer()
+{
+	if (--nifty_counter == 0) 
+		(&jlib::gTrace)->~CTrace();
+}
+

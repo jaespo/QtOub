@@ -14,7 +14,7 @@
  
 int main()
 {
-	jlib::CTrace::inst().EnableTag("tcp");
+	jlib::gTrace.EnableTag("tcp");
 	jlib::TListener<oub::CLogonHandler>	vListener( LOGONSVR_IP, LOGONSVR_PORT );
 
 	std::cout
