@@ -1,5 +1,5 @@
-#ifndef __NIFTY_H__
-#define __NIFTY_H__
+#ifndef __nifty_h__
+#define __nifty_h__
 
 #include <new>
 #include <type_traits>
