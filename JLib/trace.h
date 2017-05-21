@@ -12,8 +12,9 @@
 #include <list>
 #include <algorithm>
 #include <iomanip>
-#include <new>
-#include <type_traits>
+
+#include "misc.h"
+#include "nifty.h"
 
 //
 //  Trace utilities
@@ -40,13 +41,6 @@ namespace jlib
 		std::list<std::string>  mTagList;
 	};
 
-	extern CTrace&			gTrace;
-
-	static struct CJlibInitializer
-	{
-		CJlibInitializer();
-		~CJlibInitializer();
-	} gJlibInitializer;
-
+	NIFTY_DCL(CTrace, gTrace)
 
 }   // end namespace

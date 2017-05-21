@@ -3,14 +3,7 @@
 //
 //  Statics
 //
-static int nifty_counter;
-static typename std::aligned_storage<sizeof(jlib::CTrace),
-	alignof(jlib::CTrace)>::type CTrace_buf;
-jlib::CTrace& jlib::gTrace = reinterpret_cast<jlib::CTrace&>( CTrace_buf );
-
-
-// jlib::CTrace::CTrace() {}
-// jlib::CTrace::~CTrace() {}
+NIFTY_IMPL(jlib, CTrace, gTrace)
 
 //
 //  Enables the specfied tag
@@ -40,18 +33,4 @@ bool jlib::CTrace::IsTagActive(const char* pzTag) const
 	return (it != mTagList.end());
 }
 
-//
-//	Static globals initializer
-//
-jlib::CJlibInitializer::CJlibInitializer()
-{
-	if (nifty_counter++ == 0) 
-		new (&jlib::gTrace) CTrace();
-}
-
-jlib::CJlibInitializer::~CJlibInitializer()
-{
-	if (--nifty_counter == 0) 
-		(&jlib::gTrace)->~CTrace();
-}
 

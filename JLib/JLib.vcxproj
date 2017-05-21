@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="misc.h" />
     <ClInclude Include="msg.h" />
+    <ClInclude Include="nifty.h" />
     <ClInclude Include="tcp.h" />
     <ClInclude Include="trace.h" />
   </ItemGroup>
