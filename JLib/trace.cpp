@@ -1,4 +1,3 @@
-#include <new>
 #include "trace.h"
 
 //
