@@ -11,7 +11,11 @@
 //
 //	Statics
 //
-jlib::CClientSocket	oub::CLogonSvrConnection::mClientSocket(LOGONSVR_IP, LOGONSVR_PORT);
+NIFTY_STATIC_IMPL( jlib, CClientSocket, oub, CLogonSvrConnection,
+	mClientSocket, LOGONSVR_IP, LOGONSVR_PORT )
+
+// jlib::CClientSocket	oub::CLogonSvrConnection::mClientSocket(
+//	LOGONSVR_IP, LOGONSVR_PORT);
 
 void oub::CCmdConnect::Exec()
 {

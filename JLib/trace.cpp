@@ -3,7 +3,7 @@
 //
 //  Statics
 //
-NIFTY_IMPL(jlib, CTrace, gTrace)
+NIFTY_IMPL(jlib, CTrace, gTrace )
 
 //
 //  Enables the specfied tag

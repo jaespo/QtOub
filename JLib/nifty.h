@@ -39,19 +39,20 @@
 //	vNameSpace		is the namespace of the object's class
 //	vClass			is the class of the object
 //	vVar			is the variable name of the object
+//	...				are the params to the ctor
 //
-#define NIFTY_IMPL( vNameSpace, vClass, vVar )									\
+#define NIFTY_IMPL( vNameSpace, vClass, vVar, ... )								\
 	static int vNameSpace##_##vVar##_nifty_counter;								\
-	static typename std::aligned_storage<sizeof(vNameSpace##::##vClass),		\
-		alignof(vNameSpace##::##vClass)>::type vNameSpace##_##vVar##_buf;		\
-	vNameSpace::vClass& vNameSpace##::##vVar =									\
-		reinterpret_cast<vNameSpace##::##vClass&>(vNameSpace##_##vVar##_buf);	\
-	vNameSpace##::C##vVar##_Initializer::C##vVar##_Initializer()				\
+	static typename std::aligned_storage<sizeof(vNameSpace::vClass),			\
+		alignof(vNameSpace::vClass)>::type vNameSpace##_##vVar##_buf;			\
+	vNameSpace::vClass& vNameSpace::vVar =										\
+		reinterpret_cast<vNameSpace::vClass&>(vNameSpace##_##vVar##_buf);		\
+	vNameSpace::C##vVar##_Initializer::C##vVar##_Initializer()					\
 	{																			\
 		if (vNameSpace##_##vVar##_nifty_counter++ == 0)							\
-			new (&vNameSpace##_##vVar##_buf) vClass();							\
+			new (&vNameSpace##_##vVar##_buf) vClass( __VA_ARGS__ );				\
 	}																			\
-	vNameSpace##::C##vVar##_Initializer::~C##vVar##_Initializer()				\
+	vNameSpace::C##vVar##_Initializer::~C##vVar##_Initializer()					\
 	{																			\
 		if (--vNameSpace##_##vVar##_nifty_counter == 0)							\
 			(&vVar)->~vClass();													\
@@ -59,57 +60,45 @@
 
 //
 //	This define is similar to NIFTY_DCL, except that it is used for declaring a 
-//	"global" that is static class member.
+//	a static class member.
 //
-//	vClass	is the class of the variable
-//	vVar	is the name of the variable
+//	vClass		is the class of the static variable being declared
+//	vVar		is the name of the variable
 //
-//	Example of use:
-//
-//	namespace myNameSpace1
-//	{
-//		class CMyClass1
-//		{
-//		public:
-//			void SayHello();
-//		private:
-//			static CMyClass1		mgInst;
-//		};
-//		NIFTY_STATIC_DCL(CMyClass1, mgInst)
-//	}
-//
-#define NIFTY_STATIC_DCL( vClass, vVar )		\
-	static vClass	vVar;						\
-	static struct C##vVar##_Initializer			\
-	{											\
-		C##vVar##_Initializer();				\
-		~C##vVar##_Initializer();				\
+#define NIFTY_STATIC_DCL( vClass, vVar )					\
+	static vClass	vVar;									\
+	static struct C##vVar##_Initializer						\
+	{														\
+		C##vVar##_Initializer();							\
+		~C##vVar##_Initializer();							\
 	} vVar##_Initializer;			
 
 //
 //	define used in a .cpp file to construct a global object before its first use
 //	and destruct it after all other static objects that use it are destructed
 //
-//	vNameSpace		is the namespace of the object's class
-//	vClass			is the class vof the object
-//	vVar			is the variable name of the object
+//	vNs				is the namespace of the vVar's class
+//	vClass			is the class of vVar 
+//  vEncNs			is the namespace of the class that vVar is a member of
+//	vEncClass		is the class that vVar is a member of
+//	vVar			is the member name of the static variable
+//	...				are the params to the ctor, enclosed in parens
 //
-#define NIFTY_STATIC_IMPL( vNameSpace, vClass, vVar )							\
-	static int vNameSpace##_##vVar##_nifty_counter;								\
-	static typename std::aligned_storage<sizeof(vNameSpace##::##vClass),		\
-		alignof(vNameSpace##::##vClass)>::type									\
-			vNameSpace##_##vClass##_##vVar##_buf;								\
-	vNameSpace::vClass vNameSpace##::vClass##::##vVar =							\
-		reinterpret_cast<vNameSpace##::##vClass&>(								\
-			vNameSpace##_##vClass##_##vVar##_buf);								\
-	vNameSpace##::vClass::C##vVar##_Initializer::C##vVar##_Initializer()		\
+#define NIFTY_STATIC_IMPL( vNs, vClass, vEncNs, vEncClass, vVar, ... )			\
+	static int vEncNs##vEncClass##_##vVar##_nifty_counter;						\
+	static typename std::aligned_storage<sizeof(vNs::vClass),					\
+		alignof(vNs::vClass)>::type	vEncNs##_##vEncClass##_##vVar##_buf;		\
+	vNs::vClass vEncNs::vEncClass::vVar =										\
+		reinterpret_cast<vNs::vClass&>(											\
+			vEncNs##_##vEncClass##_##vVar##_buf );								\
+	vEncNs::vEncClass::C##vVar##_Initializer::C##vVar##_Initializer()			\
 	{																			\
-		if (vNameSpace##_##vVar##_nifty_counter++ == 0)							\
-			new (&vNameSpace##_##vClass##_##vVar##_buf) vClass();				\
+		if (vEncNs##vEncClass##_##vVar##_nifty_counter++ == 0)					\
+			new(&vEncNs##_##vEncClass##_##vVar##_buf)vNs::vClass(__VA_ARGS__);	\
 	}																			\
-	vNameSpace##::vClass::C##vVar##_Initializer::~C##vVar##_Initializer()		\
+	vEncNs::vEncClass::C##vVar##_Initializer::~C##vVar##_Initializer()			\
 	{																			\
-		if (--vNameSpace##_##vVar##_nifty_counter == 0)							\
+		if (vEncNs##vEncClass##_##vVar##_nifty_counter-- == 0)					\
 			(&vVar)->~vClass();													\
 	}
 #endif

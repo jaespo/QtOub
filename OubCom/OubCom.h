@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "..\JLib\nifty.h"
 #include "..\JLib\tcp.h"
 #include "..\OubLib\oubmsg.h"
 
@@ -21,7 +22,7 @@ namespace oub
 		static jlib::CClientSocket& GetClientSocket() { return mClientSocket;  }
 
 	private:
-		static jlib::CClientSocket		mClientSocket;
+		NIFTY_STATIC_DCL(jlib::CClientSocket, mClientSocket);
 	};
 
 	class CCmdConnect
