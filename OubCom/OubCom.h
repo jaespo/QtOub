@@ -22,7 +22,13 @@ namespace oub
 		static jlib::CClientSocket& GetClientSocket() { return mClientSocket;  }
 
 	private:
-		NIFTY_STATIC_DCL(jlib::CClientSocket, mClientSocket);
+//		NIFTY_STATIC_DCL(jlib::CClientSocket, mClientSocket);
+		static jlib::CClientSocket&	mClientSocket;									
+		static struct CmClientSocket_Initializer						
+		{														
+			CmClientSocket_Initializer();							
+			~CmClientSocket_Initializer();							
+		} mClientSocket_Initializer;			
 	};
 
 	class CCmdConnect

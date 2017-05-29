@@ -32,6 +32,7 @@
 //
 #include "misc.h"
 #include "msg.h"
+#include "nifty.h"
 
 #define DEFAULT_BUFLEN	4096
 
@@ -48,7 +49,7 @@ namespace jlib
 		~CSocketInitializer();
 
 	private:
-		static CSocketInitializer	mgInst;
+		NIFTY_STATIC_DCL( CSocketInitializer, mgInst );
 	};
 
 	//

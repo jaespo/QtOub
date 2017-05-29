@@ -11,8 +11,24 @@
 //
 //	Statics
 //
-NIFTY_STATIC_IMPL( jlib, CClientSocket, oub, CLogonSvrConnection,
-	mClientSocket, LOGONSVR_IP, LOGONSVR_PORT )
+// NIFTY_STATIC_IMPL( jlib, CClientSocket, oub, CLogonSvrConnection,
+//	mClientSocket, LOGONSVR_IP, LOGONSVR_PORT )
+static int oubCLogonSvrConnection_mClientSocket_nifty_counter;						
+	static typename std::aligned_storage<sizeof(jlib::CClientSocket),					
+		alignof(jlib::CClientSocket)>::type	oub_CLogonSvrConnection_mClientSocket_buf;		
+	jlib::CClientSocket oub::CLogonSvrConnection::mClientSocket =										
+		reinterpret_cast<jlib::CClientSocket&>(											
+			oub_CLogonSvrConnection_mClientSocket_buf );								
+	oub::CLogonSvrConnection::CmClientSocket_Initializer::CmClientSocket_Initializer()			
+	{																			
+		if (oubCLogonSvrConnection_mClientSocket_nifty_counter++ == 0)					
+			new(&oub_CLogonSvrConnection_mClientSocket_buf)jlib::CClientSocket(LOGONSVR_IP, LOGONSVR_PORT);
+	}																			
+	oub::CLogonSvrConnection::CmClientSocket_Initializer::~CmClientSocket_Initializer()			
+	{																			
+		if (oubCLogonSvrConnection_mClientSocket_nifty_counter-- == 0)					
+			(&mClientSocket)->~CClientSocket();													
+	}
 
 // jlib::CClientSocket	oub::CLogonSvrConnection::mClientSocket(
 //	LOGONSVR_IP, LOGONSVR_PORT);
