@@ -19,17 +19,13 @@ namespace oub
 	class CLogonSvrConnection
 	{
 	public:
-		static jlib::CClientSocket& GetClientSocket() { return mClientSocket;  }
+		static jlib::CClientSocket& GetClientSocket() { return mgClientSocket;  }
 
 	private:
-//		NIFTY_STATIC_DCL(jlib::CClientSocket, mClientSocket);
-		static jlib::CClientSocket&	mClientSocket;									
-		static struct CmClientSocket_Initializer						
-		{														
-			CmClientSocket_Initializer();							
-			~CmClientSocket_Initializer();							
-		} mClientSocket_Initializer;			
+		NIFTY_STATIC_DCL(CLogonSvrConnection, jlib::CClientSocket, mgClientSocket)
 	};
+
+	NIFTY_STATIC_INIT_DCL(CLogonSvrConnection, mgClientSocket)
 
 	class CCmdConnect
 	{

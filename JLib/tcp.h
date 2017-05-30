@@ -49,8 +49,9 @@ namespace jlib
 		~CSocketInitializer();
 
 	private:
-		NIFTY_STATIC_DCL( CSocketInitializer, mgInst );
+		NIFTY_STATIC_DCL( CSocketInitializer, CSocketInitializer, mgInst )
 	};
+	NIFTY_STATIC_INIT_DCL(CSocketInitializer, mgInst)
 
 	//
 	//	The base class for the CClientSocket and CServerSocket 

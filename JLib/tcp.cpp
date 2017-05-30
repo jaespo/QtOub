@@ -12,7 +12,7 @@
 //
 //	Statics
 //
-NIFTY_STATIC_IMPL( jlib, CSocketInitializer, jlib, CSocketInitializer, mgInst );
+NIFTY_STATIC_IMPL( jlib, CSocketInitializer, jlib, CSocketInitializer, mgInst )
 
 jlib::CBaseSocket::CBaseSocket(
 	SOCKET					vWsaSocket,
