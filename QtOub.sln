@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OubDbTest", "OubDbTest\OubD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OubCom", "OubCom\OubCom.vcxproj", "{DBDA745B-84AA-43FF-9737-5B49FEE6B0EF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MonGen", "MonGen\MonGen.vcxproj", "{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -121,6 +123,16 @@ Global
 		{DBDA745B-84AA-43FF-9737-5B49FEE6B0EF}.Release|x64.Build.0 = Release|x64
 		{DBDA745B-84AA-43FF-9737-5B49FEE6B0EF}.Release|x86.ActiveCfg = Release|Win32
 		{DBDA745B-84AA-43FF-9737-5B49FEE6B0EF}.Release|x86.Build.0 = Release|Win32
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Debug|ARM.ActiveCfg = Debug|Win32
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Debug|x64.ActiveCfg = Debug|x64
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Debug|x64.Build.0 = Debug|x64
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Debug|x86.ActiveCfg = Debug|Win32
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Debug|x86.Build.0 = Debug|Win32
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Release|ARM.ActiveCfg = Release|Win32
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Release|x64.ActiveCfg = Release|x64
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Release|x64.Build.0 = Release|x64
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Release|x86.ActiveCfg = Release|Win32
+		{B62C38BF-DB77-4FBF-AD71-9D373C25A16D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
