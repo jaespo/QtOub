@@ -76,10 +76,10 @@ bool jlib::CBaseSocket::ReadMsg(const CMsg& rMsg)
 			DEFAULT_BUFLEN - vTotCountRead, 0);
 		TR("tcp",
 			<< GetIpAndPort()
-			<< "recv() completed with "
+			<< ": recv() completed with "
 			<< vCountRead
 			<< " bytes");
-		if (vCountRead == 0)
+		if (vCountRead == 0 || vCountRead == -1 )
 		{
 			TR("tcp", 
 				<< GetIpAndPort()

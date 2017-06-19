@@ -110,7 +110,7 @@
 	vEncNs::vEncClass##_##vVar##_Initializer::vEncClass##_##vVar##_Initializer()	\
 	{																				\
 		if (vEncNs##_##vEncClass##_##vVar##_nifty_counter++ == 0)					\
-			new(&vEncNs##_##vEncClass##_##vVar##_buf)vNs::vClass(__VA_ARGS__);		\
+			new(&vEncClass::vVar)vNs::vClass(__VA_ARGS__);							\
 	}																				\
 	vEncNs::vEncClass##_##vVar##_Initializer::~vEncClass##_##vVar##_Initializer()	\
 	{																				\

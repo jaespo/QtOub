@@ -33,6 +33,12 @@ namespace oub
 		static void Exec();
 	};
 
+	class CCmdLogon
+	{
+	public:
+		static void Exec(const std::vector<std::string>& rTokVect);
+	};
+
 	class CCmdHelp
 	{
 	public:

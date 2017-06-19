@@ -14,20 +14,19 @@
 NIFTY_STATIC_IMPL( jlib, CClientSocket, oub, CLogonSvrConnection,
 	mgClientSocket, LOGONSVR_IP, LOGONSVR_PORT )
 
-
-// jlib::CClientSocket	oub::CLogonSvrConnection::mClientSocket(
-//	LOGONSVR_IP, LOGONSVR_PORT);
-
-	void oub::CCmdConnect::Exec()
+//
+//	Executes the connect command
+//
+void oub::CCmdConnect::Exec()
+{
+	try
 	{
-		try
-		{
-			CLogonSvrConnection::GetClientSocket().Connect();
-		}
-		catch (jlib::CErrorInfo& rErrorInfo )
-		{
-			std::cout << rErrorInfo.GetText() << std::endl;
-		}
+		CLogonSvrConnection::GetClientSocket().Connect();
+	}
+	catch (jlib::CErrorInfo& rErrorInfo )
+	{
+		std::cout << rErrorInfo.GetText() << std::endl;
+	}
 }
 
 //
@@ -38,6 +37,34 @@ void oub::CCmdHelp::Exec()
 	std::cout << "c, connect	connect to the logon server" << std::endl;
 	std::cout << "h, help		display a list of commands" << std::endl;
 	std::cout << "q, quit		exit OubCom" << std::endl;
+}
+
+//
+//	Executes the logon command
+//
+void oub::CCmdLogon::Exec(const std::vector<std::string>& rTokVect)
+{
+	//
+	//	Format a logon request
+	//
+	oub::CLogonReq		req;
+	oub::CLogonRsp		rsp;
+
+	req.mReqCode = oub::ELogonServerReqCode::kReqCodeLogon;
+	req.mReqSeq = jlib::CReq::GetNextReqSeq();
+	req.mMsgLen = sizeof(oub::CLogonReq);
+	FILLFIELD(req.mUserId, rTokVect[1] );
+	FILLFIELD(req.mPassword, rTokVect[2] );
+
+	try
+	{
+		CLogonSvrConnection::GetClientSocket().WriteRead( req, rsp );
+	}
+	catch (jlib::CErrorInfo& rErrorInfo)
+	{
+		std::cout << rErrorInfo.GetText() << std::endl;
+	}
+	std::cout << rsp.traceStr() << std::endl;
 }
 
 //
@@ -62,6 +89,8 @@ void oub::CCmdProcessor::ExecCmd(const std::vector<std::string>& rTokVect)
 		oub::CCmdHelp::Exec();
 	else if (rTokVect[0] == "connect" || rTokVect[0] == "c")
 		oub::CCmdConnect::Exec();
+	else if (rTokVect[0] == "logon" || rTokVect[0] == "c")
+		oub::CCmdLogon::Exec( rTokVect );
 	else
 		std::cout << "Unknown command: " << rTokVect[0];
 }

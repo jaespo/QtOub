@@ -21,6 +21,21 @@ std::string oub::CLogonRsp::traceStr() const
 {
 	std::stringstream ss;
 	ss << "LogonRsp" << "\n";
+	switch (this->mRspCode)
+	{
+	case kRcOk: 
+		ss << "kRcRspOk" << "\n";
+		break;
+	case kRcDbError:
+		ss << "kRcDbError" << "\n";
+		break;
+	case kRcUserNotFound:
+		ss << "kRcUserNotFound" << "\n";
+		break;
+	case kRcBadPassword:
+		ss << "kRcBadPassword" << "\n";
+		break;
+	}
 	ss << CRsp::traceStr();
 	return ss.str();
 }
