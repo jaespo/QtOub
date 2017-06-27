@@ -71,7 +71,7 @@ namespace jlib
 
 	protected:
 		void WriteMsg( const CMsg& rMsg );
-		bool ReadMsg( const CMsg& rMsg );
+		jlib::CMsg::Yq ReadMsg();
  
 		std::string 		msIpAddr;
 		std::string			msPort;
@@ -94,7 +94,7 @@ namespace jlib
 
 		void Connect();
 		void SetReqTimeout(__int32 vMillisecs);
-		bool WriteRead(CReq& rReq, CRsp& rRsp);
+		jlib::CRsp::Yq WriteRead(CReq& rReq);
 	};
 
 	//
@@ -112,7 +112,7 @@ namespace jlib
 			: CBaseSocket(vWsaSocket, rsIpAddr, rsPort) {}
 		~CServerSocket();
 
-		bool ReadReq(CReq& rReq);
+		jlib::CReq::Yq ReadReq();
 		void Reply(CRsp& rRsp);
 
 	private:

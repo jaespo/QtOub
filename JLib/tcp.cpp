@@ -51,7 +51,7 @@ void jlib::CBaseSocket::Disconnect()
 //
 //	reads a message from the socket.  Returns an EOF flag
 //
-bool jlib::CBaseSocket::ReadMsg(const CMsg& rMsg)
+jlib::CMsg::Yq jlib::CBaseSocket::ReadMsg()
 {
 	char			pBuf[DEFAULT_BUFLEN];
 	__int32			vTotCountRead = 0;
@@ -84,7 +84,7 @@ bool jlib::CBaseSocket::ReadMsg(const CMsg& rMsg)
 			TR("tcp", 
 				<< GetIpAndPort()
 				<< ": ReadMsg EOF");
-			return true;
+			return nullptr;
 		}
 
 		//
@@ -111,17 +111,15 @@ bool jlib::CBaseSocket::ReadMsg(const CMsg& rMsg)
 		}
 
 		bDone = (vTotCountRead == vReqSize);
-		if (bDone)
-		{
-			memcpy( (void *)&rMsg, pBuf, vTotCountRead);
-		}
 	}
 	TR("tcp",
 		<< GetIpAndPort()
 		<< ": ReadUpdate completed with "
 		<< vTotCountRead
 		<< " bytes");
-	return false;
+	jlib::CRsp::Yq qMsg = jlib::CRsp::Yq(new char[vTotCountRead]);
+	memcpy((void *)qMsg.get(), pBuf, vTotCountRead);
+	return qMsg;
 }
 
 //
@@ -245,13 +243,29 @@ void jlib::CClientSocket::SetReqTimeout(__int32 vMillisecs)
 }
 
 //
+//	Writes a request to the client socket and reads the response
+//
+jlib::CRsp::Yq jlib::CClientSocket::WriteRead(CReq& rReq)
+{
+	WriteMsg(rReq);
+	jlib::CMsg::Yq qMsg = ReadMsg();
+	jlib::CRsp::Yq qRsp = std::dynamic_pointer_cast<jlib::CRsp>( qMsg );
+	if ( qRsp == nullptr )
+	{
+		THROW_ERR(9999,
+			<< GetIpAndPort()
+			<< ": EOF on read of response");
+	}
+	return qRsp;
+}
+
+//
 //	Called when the handler thread starts
 //
 void jlib::CHandler::RunLoop(CServerSocket::Yq qSocket)
 {
-	char					pReqBuf[DEFAULT_BUFLEN];
 	char					pRspBuf[DEFAULT_BUFLEN];
-	CReq*					pReq = (CReq*)pReqBuf;
+	CReq::Yq				qReq;
 	CRsp*					pRsp = (CRsp*)pRspBuf;
 
 	TR("tcp", 
@@ -265,8 +279,8 @@ void jlib::CHandler::RunLoop(CServerSocket::Yq qSocket)
 	{
 		try
 		{
-			bool bEof = mqSocket->ReadReq(*pReq);
-			if (bEof)
+			qReq = qSocket->ReadReq();
+			if (qReq == nullptr)
 				return;
 		}
 		catch (std::shared_ptr<CErrorInfo> qError)
@@ -275,7 +289,7 @@ void jlib::CHandler::RunLoop(CServerSocket::Yq qSocket)
 			return;
 		}
 
-		DoProcessReq(*pReq, *pRsp);
+		DoProcessReq(*qReq, *pRsp);
 		mqSocket->Reply(*pRsp);
 	}
 }
@@ -455,11 +469,11 @@ jlib::CServerSocket::~CServerSocket()
 //
 //	Reads a request
 //
-//	returns an EOF flag
+//	nullptr means EOF
 //
-bool jlib::CServerSocket::ReadReq(CReq& rReq)
+jlib::CReq::Yq jlib::CServerSocket::ReadReq()
 {
-	return ReadMsg( rReq );
+	return std::dynamic_pointer_cast<jlib::CReq>( ReadMsg() );
 }
 
 //

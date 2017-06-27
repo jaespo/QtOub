@@ -2,6 +2,7 @@
 //	(C) 2016 by Jeffery A Esposito
 //
 #pragma once
+#include <memory>
 #include <string>
 #include "misc.h"
 
@@ -14,8 +15,9 @@ namespace jlib
 	{
 
 	public:
+		typedef std::shared_ptr<CMsg>	Yq;
+		
 		virtual ~CMsg() {}
-
 		//
 		//	Inclusive
 		//
@@ -29,6 +31,8 @@ namespace jlib
 	{
 
 	public:
+		typedef std::shared_ptr<CReq>	Yq;
+		
 		CReq() {}
 		virtual ~CReq() {}
 
@@ -48,6 +52,8 @@ namespace jlib
 	class CRsp : public CMsg
 	{
 	public:
+		typedef std::shared_ptr<CRsp>	Yq;
+
 		CRsp();
 		void SetErrorText(const std::string& rTxt);
 		void InitFromReq(const CReq& rReq);
