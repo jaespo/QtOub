@@ -54,9 +54,9 @@ void jlib::CBaseSocket::Disconnect()
 jlib::CMsg::Yq jlib::CBaseSocket::ReadMsg()
 {
 	char			pBuf[DEFAULT_BUFLEN];
-	__int32			vTotCountRead = 0;
-	__int32			vCountRead;
-	__int16			vReqSize;
+	int32_t			vTotCountRead = 0;
+	int32_t			vCountRead;
+	int16_t			vReqSize;
 	bool			bGotLen = false;
 	bool			bDone = false;
 
@@ -117,7 +117,7 @@ jlib::CMsg::Yq jlib::CBaseSocket::ReadMsg()
 		<< ": ReadUpdate completed with "
 		<< vTotCountRead
 		<< " bytes");
-	jlib::CRsp::Yq qMsg = jlib::CRsp::Yq(new char[vTotCountRead]);
+	jlib::CRsp::Yq qMsg = jlib::CRsp::Yq((jlib::CRsp*)( new char[vTotCountRead] ));
 	memcpy((void *)qMsg.get(), pBuf, vTotCountRead);
 	return qMsg;
 }
@@ -227,7 +227,7 @@ void jlib::CClientSocket::Connect()
 //
 //	Sets the timeout on calls to WriteRead()
 //
-void jlib::CClientSocket::SetReqTimeout(__int32 vMillisecs)
+void jlib::CClientSocket::SetReqTimeout(int32_t vMillisecs)
 {
 	if (!setsockopt(mWsaSocket, SOL_SOCKET, SO_RCVTIMEO,
 		(const char*)&vMillisecs, sizeof(vMillisecs)))
@@ -484,7 +484,7 @@ void jlib::CServerSocket::Reply(CRsp& rRsp)
 	TR("tcp",
 		<< GetIpAndPort()
 		<< ": replying with rsp "
-		<< rRsp.traceStr());
+		<< rRsp.TraceStr());
 	WriteMsg( rRsp );
 }
 

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __CLIENTSOCKET_H__
+#define __CLIENTSOCKET_H__
+
 //
 //	(C) 2016 by Jeffery A Esposito
 //
@@ -24,5 +26,8 @@ private:
 	int								mPort;
 	std::shared_ptr<QTcpSocket>		mqSocket;
 };
+
+#endif
+
 
  

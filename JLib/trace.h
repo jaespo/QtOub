@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __TRACE_H__
+#define __TRACE_H__
+
 ///////////////////////////////////////////////////////////////////////
 //
 //	trace.h
@@ -44,3 +46,6 @@ namespace jlib
 	NIFTY_DCL(CTrace, gTrace)
 
 }   // end namespace
+
+#endif
+

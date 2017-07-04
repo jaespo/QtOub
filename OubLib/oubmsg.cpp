@@ -4,11 +4,11 @@
 //
 //	Returns a string that traces the logon request
 //
-std::string oub::CLogonReq::traceStr() const
+std::string oub::CLogonReq::TraceStr() const
 {
 	std::stringstream ss;
 	ss << "LogonReq" << "\n";
-	ss << CReq::traceStr();
+	ss << CReq::TraceStr();
 	ss << "mUserId:        " << mUserId << "\n";
 	ss << "mPassword:      " << mPassword << "\n";
 	return ss.str();
@@ -17,7 +17,7 @@ std::string oub::CLogonReq::traceStr() const
 //
 //	Returns a string that traces the logon response
 //
-std::string oub::CLogonRsp::traceStr() const
+std::string oub::CLogonRsp::TraceStr() const
 {
 	std::stringstream ss;
 	ss << "LogonRsp" << "\n";
@@ -36,6 +36,6 @@ std::string oub::CLogonRsp::traceStr() const
 		ss << "kRcBadPassword" << "\n";
 		break;
 	}
-	ss << CRsp::traceStr();
+	ss << CRsp::TraceStr();
 	return ss.str();
 }

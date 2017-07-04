@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __LOGONHANDLER_H__
+#define __LOGONHANDLER_H__
+
 /////////////////////////////////////////////////////////////////////
 //
 // (C) 2016 by Jeffery A Esposito
@@ -23,4 +25,6 @@ namespace oub
 		COubDbConnection			mOubDbCon;
 	};
 };	// namespace oub
+
+#endif
 

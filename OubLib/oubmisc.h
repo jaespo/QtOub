@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __OUBMISC_H__
+#define __OUBMISC_H__
+
 //
 //	Miscelleous declarations used by oub
 //
@@ -17,3 +19,6 @@ namespace oub
 	typedef char			YPassword[32];
 
 };	// namespace oub
+
+#endif
+

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MISC_H__
+#define __MISC_H__
+
 //
 //	Miscelleous declarations
 //
@@ -14,9 +16,9 @@ namespace jlib
 	//
 	//	Various data types used by oub
 	//
-	typedef __int16			YReqCode;
-	typedef __int16			YRspCode;
-	typedef __int64			YReqSeq;
+	typedef int16_t			YReqCode;
+	typedef int16_t			YRspCode;
+	typedef int64_t			YReqSeq;
 	typedef char			YUserId[32];
 	typedef char			YPassword[32];
 	typedef char			YErrorText[1024];
@@ -52,7 +54,7 @@ namespace jlib
 	{
 	public:
 		CErrorInfo() { mCode = 0; }
-		CErrorInfo(__int32 vCode, const char *pzSrcFile);
+		CErrorInfo(int32_t vCode, const char *pzSrcFile);
 		~CErrorInfo() {}
 		CErrorInfo(CErrorInfo& ei)
 		{
@@ -62,16 +64,18 @@ namespace jlib
 		}
 		std::string GetText() { return msText; }
 		std::string GetSrcFile() { return msSrcFile; }
-		__int32 GetCode() { return mCode; }
+		int32_t GetCode() { return mCode; }
 
 		void SetText(const std::string& sText ) { msText = sText; }
 		void SetSrcFile(const std::string& sSrcFile) { msSrcFile = sSrcFile; }
-		void GetCode(__int32 vCode ) { mCode = vCode; }
+		void GetCode(int32_t vCode ) { mCode = vCode; }
 
 	private:
 		std::string						msSrcFile;
-		__int32							mCode;
+		int32_t							mCode;
 		std::string 					msText;
 	};
 
 };	// namespace jlib
+
+#endif 

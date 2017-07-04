@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __TCP_H__
+#define __TCP_H__
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	Tcp/Ip utilities
@@ -93,7 +95,7 @@ namespace jlib
 		~CClientSocket() {}
 
 		void Connect();
-		void SetReqTimeout(__int32 vMillisecs);
+		void SetReqTimeout(int32_t vMillisecs);
 		jlib::CRsp::Yq WriteRead(CReq& rReq);
 	};
 
@@ -179,3 +181,5 @@ namespace jlib
 
 
 };	// namespace oub
+
+#endif 

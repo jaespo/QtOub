@@ -1,6 +1,7 @@
-#pragma once
+#ifndef __OUBDB_H__
+#define __OUBDB_H__
+
 #include <string>
-#include <my_global.h>
 #include <mysql.h>
 
 #define			kDbHost			"localhost"
@@ -20,6 +21,7 @@ namespace oub {
 		~COubDbInitializer();
 
 	};
+
 	//
 	//	instantiate one of these per thread that uses the database
 	//
@@ -37,6 +39,6 @@ namespace oub {
 		MYSQL*						mCon;
 		static COubDbInitializer	mgOubDbInitializer;
 	};
-
-
 }
+
+#endif

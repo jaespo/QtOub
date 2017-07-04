@@ -1,7 +1,9 @@
+#ifndef __OUBMSG_H__
+#define __OUBMSG_H__
+
 //
 //	(C) 2016 by Jeffery A Esposito
 //
-#pragma once
 #include "..\JLib\misc.h"
 #include "..\JLib\msg.h"
 #include "oubmisc.h"
@@ -12,8 +14,6 @@
 
 namespace oub
 {
-	const unsigned __int16		kLogonServerPort = 3141;
-
 	enum ELogonServerReqCode
 	{
 		kReqCodeLogon,
@@ -30,7 +30,7 @@ namespace oub
 		YUserId			mUserId;
 		YPassword		mPassword;
 
-		std::string traceStr() const;
+		std::string TraceStr() const;
 	};
 
 	//
@@ -50,7 +50,9 @@ namespace oub
 		//
 		//	All of the members are in the base CRsp
 		//
-		std::string traceStr() const;
+		std::string TraceStr() const;
 
 	};
 };	// namespace oub
+
+#endif 

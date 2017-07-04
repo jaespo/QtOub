@@ -36,6 +36,7 @@ void oub::CCmdHelp::Exec()
 {
 	std::cout << "c, connect	connect to the logon server" << std::endl;
 	std::cout << "h, help		display a list of commands" << std::endl;
+	std::cout << "l, logon		issue logon request to the logon server" << std::endl;
 	std::cout << "q, quit		exit OubCom" << std::endl;
 }
 
@@ -47,24 +48,29 @@ void oub::CCmdLogon::Exec(const std::vector<std::string>& rTokVect)
 	//
 	//	Format a logon request
 	//
-	oub::CLogonReq		req;
-	oub::CLogonRsp		rsp;
+	oub::CLogonReq		vReq;
+	oub::CLogonRsp::Yq	qRsp;
 
-	req.mReqCode = oub::ELogonServerReqCode::kReqCodeLogon;
-	req.mReqSeq = jlib::CReq::GetNextReqSeq();
-	req.mMsgLen = sizeof(oub::CLogonReq);
-	FILLFIELD(req.mUserId, rTokVect[1] );
-	FILLFIELD(req.mPassword, rTokVect[2] );
+	vReq.mReqCode = oub::ELogonServerReqCode::kReqCodeLogon;
+	vReq.mReqSeq = jlib::CReq::GetNextReqSeq();
+	vReq.mMsgLen = sizeof(oub::CLogonReq);
+	if (rTokVect.size() < 2)
+	{
+		std::cout << "Error: expected logon <user> <pwd>" << std::endl;
+		return;
+	}
+	FILLFIELD(vReq.mUserId, rTokVect[1] );
+	FILLFIELD(vReq.mPassword, rTokVect[2] );
 
 	try
 	{
-		CLogonSvrConnection::GetClientSocket().WriteRead( req, rsp );
+		qRsp = CLogonSvrConnection::GetClientSocket().WriteRead( vReq );
 	}
 	catch (jlib::CErrorInfo& rErrorInfo)
 	{
 		std::cout << rErrorInfo.GetText() << std::endl;
 	}
-	std::cout << rsp.traceStr() << std::endl;
+	std::cout << qRsp->TraceStr() << std::endl;
 }
 
 //
@@ -89,7 +95,7 @@ void oub::CCmdProcessor::ExecCmd(const std::vector<std::string>& rTokVect)
 		oub::CCmdHelp::Exec();
 	else if (rTokVect[0] == "connect" || rTokVect[0] == "c")
 		oub::CCmdConnect::Exec();
-	else if (rTokVect[0] == "logon" || rTokVect[0] == "c")
+	else if (rTokVect[0] == "logon" || rTokVect[0] == "l")
 		oub::CCmdLogon::Exec( rTokVect );
 	else
 		std::cout << "Unknown command: " << rTokVect[0];

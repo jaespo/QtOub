@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __LOGONWORKER_H__
+#define __LOGONWORKER_H__
 
 #include <memory>
 
@@ -30,4 +31,7 @@ private:
 	ClientSocket::Yq		mqClientSocket;
 	bool					mbLogonPending;
 };
+
+#endif
+
 

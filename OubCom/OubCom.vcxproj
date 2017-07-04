@@ -152,6 +152,9 @@
     <ProjectReference Include="..\JLib\JLib.vcxproj">
       <Project>{794f0bb9-0a36-446e-b27d-76aba32afea0}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\OubLib\OubLib.vcxproj">
+      <Project>{e85fa2ac-5cad-4647-9f17-eb5020413b0e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

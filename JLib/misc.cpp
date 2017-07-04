@@ -8,7 +8,7 @@
 //
 //	ctor of a CErrorInfo
 //
-jlib::CErrorInfo::CErrorInfo(__int32 vCode, const char *pzSrcFile)
+jlib::CErrorInfo::CErrorInfo(int32_t vCode, const char *pzSrcFile)
 {
 	mCode = vCode;
 	msSrcFile = pzSrcFile;

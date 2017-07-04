@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __OUBCOM_H__
+#define __OUBCOM_H__
+
 #include <vector>
 #include "..\JLib\nifty.h"
 #include "..\JLib\tcp.h"
@@ -51,3 +53,5 @@ namespace oub
 		static void Exec();
 	};
 }
+
+#endif

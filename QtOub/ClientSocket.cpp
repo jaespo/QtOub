@@ -78,7 +78,7 @@ bool ClientSocket::WriteRead(const jlib::CReq& req, jlib ::CRsp& rsp)
 		}
 	}
 	qDebug() << "Wrote request: \n" ;
-	std::string strReq = req.traceStr();
+	std::string strReq = req.TraceStr();
 	qDebug() << QString::fromStdString(strReq);
 	while (mqSocket->waitForReadyRead(kReadTimeout))
 	{

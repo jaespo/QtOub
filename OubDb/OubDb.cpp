@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <my_global.h>
-#include <mysql.h>
-
 #include "..\JLib\misc.h"
 #include "OubDb.h"
 
